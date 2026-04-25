@@ -52,7 +52,7 @@ func crawlWithKatana(katanaPath, targetURL string) ([]string, error) {
 		}
 	case <-time.After(120 * time.Second):
 		if cmd.Process != nil {
-			cmd.Process.Kill()
+			_ = cmd.Process.Kill()
 		}
 		<-done
 		fmt.Println("  [Katana] Timeout, using partial results")

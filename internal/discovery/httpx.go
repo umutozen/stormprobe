@@ -39,7 +39,7 @@ func filterWithHttpx(httpxPath string, rawURLs []string, targetURL string) []str
 	case <-done:
 	case <-time.After(60 * time.Second):
 		if cmd.Process != nil {
-			cmd.Process.Kill()
+			_ = cmd.Process.Kill()
 		}
 		<-done
 		fmt.Println("  [Httpx] Timeout, using partial results")

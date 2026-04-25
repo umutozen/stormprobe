@@ -128,7 +128,7 @@ func main() {
 			continue
 		}
 		if resp, doErr := client.Do(req); doErr == nil {
-			io.Copy(io.Discard, resp.Body)
+			_, _ = io.Copy(io.Discard, resp.Body)
 			resp.Body.Close()
 		}
 	}

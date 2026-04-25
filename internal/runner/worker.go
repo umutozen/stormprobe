@@ -68,7 +68,7 @@ func executeWorker(workerID int, jobs <-chan int, client *http.Client, targetURL
 			}
 			continue
 		}
-		io.Copy(io.Discard, resp.Body)
+		_, _ = io.Copy(io.Discard, resp.Body)
 		resp.Body.Close()
 
 		statusMu.Lock()
