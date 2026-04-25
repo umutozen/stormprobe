@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	labelCharLimit     = 16
+	labelCharLimit     = 18
 	maxEndpointDisplay = 20
 	colorSuccess       = "#10b981"
 	colorWarning       = "#f59e0b"
@@ -515,7 +515,7 @@ func buildChart(results []config.PhaseResult, maxP99 float64) string {
 	chartHeight := 260
 	gap := 18
 	leftPad := 65
-	bottomPad := 60
+	bottomPad := 72
 
 	totalWidth := leftPad + len(results)*(barWidth+gap) + 40
 	if totalWidth < 700 {
@@ -611,8 +611,8 @@ func buildTable(results []config.PhaseResult) string {
 
 	for _, r := range results {
 		color := pickSuccessColor(r.SuccessRate)
-		bg := "transparent"
-		if r.SuccessRate >= 99 {
+		bg := "rgba(245,158,11,0.08)"
+		if r.SuccessRate >= 95 {
 			bg = "rgba(16,185,129,0.08)"
 		} else if r.SuccessRate < 80 {
 			bg = "rgba(239,68,68,0.08)"
