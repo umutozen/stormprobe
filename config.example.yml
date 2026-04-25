@@ -1,0 +1,26 @@
+target: "https://example.com"
+request_timeout: 10s
+
+discovery:
+  katana_timeout: 120
+  httpx_timeout: 60
+  max_endpoints: 50
+
+phases:
+  ramp:
+    - {name: "Ramp L1  (5 vu)", concurrency: 5, req_per_worker: 20}
+    - {name: "Ramp L2 (15 vu)", concurrency: 15, req_per_worker: 20}
+    - {name: "Ramp L3 (30 vu)", concurrency: 30, req_per_worker: 15}
+    - {name: "Ramp L4 (50 vu)", concurrency: 50, req_per_worker: 15}
+  sustained:
+    concurrency: 75
+    req_per_worker: 15
+    waves: 3
+  spike:
+    - {name: "Spike start (150 vu)", concurrency: 150, req_per_worker: 10}
+    - {name: "Spike peak  (250 vu)", concurrency: 250, req_per_worker: 10}
+    - {name: "Spike decay  (50 vu)", concurrency: 50, req_per_worker: 10}
+  recovery:
+    cooldown_sec: 10
+    concurrency: 10
+    req_per_worker: 10

@@ -1,0 +1,137 @@
+[English](../../README.md) · [Turkce](README.tr.md) · [Deutsch](README.de.md) · [Francais](README.fr.md) · [Espanol](README.es.md) · [Italiano](README.it.md) · [Portugues](README.pt-BR.md) · [Russkij](README.ru.md) · [Zhongwen Jian](README.zh-CN.md) · [Zhongwen Fan](README.zh-TW.md) · [Nihongo](README.ja.md) · [Hangugeo](README.ko.md) · [Al-Arabiyya](README.ar.md) · [Hindi](README.hi.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Ukrainska](README.uk.md)
+
+# StormProbe
+
+<p align="center">
+  <img src="../../assets/banner.png" alt="StormProbe" width="100%">
+</p>
+
+**khoj karo. load karo. vishleshan karo.**
+
+Svayam endpoint (ant bindu) khoj ke saath utpaadan-star ka HTTP load testing upakaran. Shunya nirbharata.
+
+[![CI](https://github.com/umutozen/stormprobe/actions/workflows/ci.yml/badge.svg)](https://github.com/umutozen/stormprobe/actions)
+[![Go Report Card](https://goreportcard.com/badge/github.com/umutozen/stormprobe)](https://goreportcard.com/report/github.com/umutozen/stormprobe)
+
+---
+
+## Visheshtaen
+
+- **Svachalit khoj** -- Katana crawl + Httpx probe svachalit roop se sakriy endpoint khojta hai
+- **Bahu-charan parikshan** -- Ramp-Up (dheere-dheere vriddhi), Sustained (nirantar), Spike (bhar shikhar), Recovery (punarprapti)
+- **Vistrit maapdand** -- P50 / P95 / P99 latency (vilambita), req/s, truti vargikaran
+- **Dohari report** -- JSON (machine padhaniy) + HTML (drishya dark theme dashboard)
+- **Shunya nirbharata** -- Shuddh Go maanak pustakalay, koi tritiya-paksha module nahin
+- **Docker taiyar** -- Katana + Httpx sahit ek aadesh
+- **Cross-platform** -- GoReleaser ke madhyam se Linux, macOS, Windows binary
+
+## Tvarit aarambh
+
+```bash
+go run ./cmd https://example.com
+
+go build -o stormprobe ./cmd
+./stormprobe --insecure https://example.com
+```
+
+### Docker
+
+```bash
+docker run --rm -v $(pwd)/outputs:/app/outputs \
+  ghcr.io/umutozen/stormprobe --insecure https://example.com
+```
+
+## Upayog
+
+```
+stormprobe [flags] <target-url>
+
+Flags:
+  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
+  --concurrency-sustained int       Concurrency for sustained phase (default 75)
+  --concurrency-spike     int       Peak concurrency for spike (default 250)
+  --req-per-worker        int       Requests per worker per step (default 15)
+  --timeout               duration  Per-request timeout (default 10s)
+  --endpoints             string    Endpoints file (one path per line, skips discovery)
+  --no-discovery                    Skip katana+httpx, test root path only
+  --output                string    Output directory for reports (default ./outputs)
+  --format                string    Report format: json, html, both (default both)
+  --katana-path           string    Custom katana binary path
+  --httpx-path            string    Custom httpx binary path
+  --insecure                        Skip TLS certificate verification
+```
+
+### Udaharan
+
+```bash
+stormprobe --insecure --concurrency-spike 500 --req-per-worker 20 https://example.com
+
+stormprobe --insecure --endpoints endpoints.txt https://example.com
+
+stormprobe --insecure --format json --output ./results https://example.com
+```
+
+## Parikshan charan
+
+| Charan | Vivaran |
+|---|---|
+| **0 -- Discovery** | Katana crawl + Httpx probe, deduplicated endpoint suchi |
+| **1 -- Ramp-Up** | Kramik vriddhi: 5, 15, 30, 50 virtual users (aabhaasi upayogkarta) |
+| **2 -- Sustained** | Lakshya concurrency (samanvayta) par 3 lahar, girават ko maapna |
+| **3 -- Spike** | Shikhar par achanak visfot, phir thandak |
+| **4 -- Recovery** | Spike ke baad 10s thandak ke baad svasthya jaanch |
+
+## Parinaam
+
+| File | Vivaran |
+|---|---|
+| `stormprobe_report_<timestamp>.json` | Sabhi maapdandon sahit machine padhaniy parinaam |
+| `stormprobe_report_<timestamp>.html` | Drishya dashboard, kisi bhi browser mein kholein |
+
+## Pariyojana sanrachana
+
+```
+stormprobe/
+    cmd/main.go                    CLI pravesh bindu
+    internal/
+        config/config.go           Sajha prakar, charan jananak
+        metrics/
+            latency.go             Pratishat ganana
+            errors.go              Truti vargikaran
+        discovery/
+            discovery.go           Discover() saarvajanik interface
+            katana.go              Katana crawler ekikaran
+            httpx.go               Httpx probe ekikaran
+        runner/
+            phase.go               Charan orchestration
+            worker.go              Goroutine pool, prati worker RNG
+        report/
+            json.go                JSON report lekhak
+            html.go                Svatantra HTML report
+    Dockerfile                     Katana + Httpx sahit bahu-charan
+    .goreleaser.yml                Cross-compilation vinya
+    Makefile                       Build, test, lint lakshya
+    config.example.yml             Charan default maan sandarbh
+```
+
+## Aavashyakataen
+
+- Go 1.21+
+- [Katana](https://github.com/projectdiscovery/katana) (ProjectDiscovery) -- vaikalpik, svachalit khoj ke liye
+- [Httpx](https://github.com/projectdiscovery/httpx) (ProjectDiscovery) -- vaikalpik, endpoint satyapan ke liye
+
+```bash
+bash scripts/install-tools.sh
+```
+
+## Dayitva apvarjan
+
+Yah upakaran **keval adhikrit suraksha parikshan aur pradarshan mulyankan** ke liye hai. Koi bhi load test chalane se pahle aapko lakshya pranali ke maalik se spasht likhit anumati prapt karni hogi. Aapke svamitv mein na hone vale ya jinke liye aapke paas parikshan ki anumati nahin hai un pranaliyon ke khilaf is upakaran ka anadhikrit upayog sthaniy, rashtriy ya antarrashtriy kanonon ka ullanghan kar sakta hai. Lekhak is upakaran ke durupayog ya iske karan hone vale nuksan ki koi jimmedari nahin lete.
+
+## Laisens
+
+MIT
+
+## Lekhak
+
+**Umut ÖZEN** -- [@umutozen](https://github.com/umutozen)
