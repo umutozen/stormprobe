@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    CLI jibryeom
     internal/
-        config/config.go           Gongyudoen taipeu, dangye saengseonggi
+        config/config.go           Gongyudoen taipeu, dangye saengseonggi, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Baegbunwi gyesan
             errors.go              Oyu bunyu

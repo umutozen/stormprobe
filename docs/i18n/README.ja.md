@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    CLI entoriipointo
     internal/
-        config/config.go           Kyooyuu-gata, feezu jenereetaa
+        config/config.go           Kyooyuu-gata, feezu jenereetaa, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Paasenta-iru keisan
             errors.go              Eraa bunrui

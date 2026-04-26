@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    CLI pravesh bindu
     internal/
-        config/config.go           Sajha prakar, charan jananak
+        config/config.go           Sajha prakar, charan jananak, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Pratishat ganana
             errors.go              Truti vargikaran

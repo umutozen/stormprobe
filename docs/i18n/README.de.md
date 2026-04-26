@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    CLI-Einstiegspunkt
     internal/
-        config/config.go           Gemeinsame Typen, Phasengeneratoren
+        config/config.go           Gemeinsame Typen, Phasengeneratoren, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Perzentilberechnung
             errors.go              Fehlerklassifizierung

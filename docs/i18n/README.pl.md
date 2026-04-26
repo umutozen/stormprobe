@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    Punkt wejscia CLI
     internal/
-        config/config.go           Typy wspoldzielone, generatory faz
+        config/config.go           Typy wspoldzielone, generatory faz, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Obliczanie percentyli
             errors.go              Klasyfikacja bledow

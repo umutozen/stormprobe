@@ -123,7 +123,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    nuqtat dukhul CLI
     internal/
-        config/config.go           anwaa mushtaraka, muwallidaat al-maraahil
+        config/config.go           anwaa mushtaraka, muwallidaat al-maraahil, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             hisaab al-nisab al-mi'awiyya
             errors.go              tasniif al-akhta'

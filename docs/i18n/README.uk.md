@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    Tochka vkhodu CLI
     internal/
-        config/config.go           Spil'ni typy, heneratory faz
+        config/config.go           Spil'ni typy, heneratory faz, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Obchyslennya protsentyliv
             errors.go              Klasyfikatsiya pomylok

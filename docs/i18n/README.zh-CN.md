@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    CLI ru kou dian
     internal/
-        config/config.go           Gong xiang lei xing, jie duan sheng cheng qi
+        config/config.go           Gong xiang lei xing, jie duan sheng cheng qi, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Bai fen wei ji suan
             errors.go              Cuo wu fen lei

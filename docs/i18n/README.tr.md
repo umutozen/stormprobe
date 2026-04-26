@@ -122,7 +122,9 @@ stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 stormprobe/
     cmd/main.go                    CLI giriş noktası
     internal/
-        config/config.go           Paylaşılan tipler, faz üreticileri
+        config/config.go           Paylaşılan tipler, faz üreticileri, alert config
+        alert/
+            alert.go               Threshold checks, CI/CD exit code logic
         metrics/
             latency.go             Yüzdelik hesaplama
             errors.go              Hata sınıflandırması
