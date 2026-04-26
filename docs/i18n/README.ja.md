@@ -71,6 +71,7 @@ Flags:
   --katana-path           string    Custom katana binary path
   --httpx-path            string    Custom httpx binary path
   --insecure                        Skip TLS certificate verification
+  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
 ```
 
 ### Rei
@@ -81,6 +82,8 @@ stormprobe --insecure --concurrency-spike 500 --req-per-worker 20 https://exampl
 stormprobe --insecure --endpoints endpoints.txt https://example.com
 
 stormprobe --insecure --format json --output ./results https://example.com
+
+stormprobe --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
 ```
 
 ## Tesuto feezu
