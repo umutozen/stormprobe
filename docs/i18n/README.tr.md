@@ -25,13 +25,28 @@ Otonom endpoint (uç nokta) keşfi ile üretim düzeyinde HTTP yük test aracı.
 - **Docker Hazır** -- Katana + Httpx dahil tek komut
 - **Çok Platformlu** -- GoReleaser ile Linux, macOS, Windows ikili dosyaları
 
-## Hızlı Başlangıç
+## Kurulum
+
+### Binary (önerilen)
+Platformunuza uygun en son sürümü [Releases sayfasından](https://github.com/umutozen/stormprobe/releases) indirin, arşivden çıkarın ve binary'yi PATH'inizdeki bir dizine taşıyın:
 
 ```bash
-go run ./cmd https://example.com
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
 
-go build -o stormprobe ./cmd
-./stormprobe --insecure https://example.com
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### Kaynaktan derleme (Go 1.21+ gerektirir)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
 ```
 
 ### Docker

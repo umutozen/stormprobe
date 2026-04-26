@@ -34,6 +34,30 @@ go build -o stormprobe ./cmd
 ./stormprobe --insecure https://example.com
 ```
 
+## Установка
+
+### Бинарный файл (рекомендуется)
+Загрузите последнюю версию для вашей платформы со [страницы Releases](https://github.com/umutozen/stormprobe/releases), распакуйте архив и переместите бинарный файл в директорию из PATH:
+
+```bash
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
+
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### Сборка из исходников (требуется Go 1.21+)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
+```
+
 ### Docker
 
 ```bash

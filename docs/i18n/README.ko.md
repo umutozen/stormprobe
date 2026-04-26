@@ -34,6 +34,30 @@ go build -o stormprobe ./cmd
 ./stormprobe --insecure https://example.com
 ```
 
+## 설치
+
+### 바이너리 (권장)
+[Releases 페이지](https://github.com/umutozen/stormprobe/releases)에서 플랫폼에 맞는 최신 버전을 다운로드하고, 압축을 풀어 PATH에 있는 디렉토리로 이동합니다:
+
+```bash
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
+
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### 소스에서 빌드 (Go 1.21+ 필요)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
+```
+
 ### Docker
 
 ```bash

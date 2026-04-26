@@ -34,6 +34,30 @@ go build -o stormprobe ./cmd
 ./stormprobe --insecure https://example.com
 ```
 
+## इंस्टॉलेशन
+
+### बाइनरी (अनुशंसित)
+[Releases पृष्ठ](https://github.com/umutozen/stormprobe/releases) से अपने प्लेटफ़ॉर्म के लिए नवीनतम संस्करण डाउनलोड करें, आर्काइव निकालें और बाइनरी को PATH में किसी डायरेक्टरी में ले जाएं:
+
+```bash
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
+
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### स्रोत से बनाएं (Go 1.21+ आवश्यक)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
+```
+
 ### Docker
 
 ```bash

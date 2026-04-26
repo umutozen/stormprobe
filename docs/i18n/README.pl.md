@@ -25,13 +25,28 @@ Produkcyjne narzedzie do testow obciazeniowych HTTP z autonomicznym wykrywaniem 
 - **Gotowy na Docker** -- Pojedyncze polecenie z wbudowanym Katana + Httpx
 - **Wieloplatformowy** -- Pliki binarne Linux, macOS, Windows przez GoReleaser
 
-## Szybki start
+## Instalacja
+
+### Plik binarny (zalecane)
+Pobierz najnowszą wersję dla swojej platformy ze [strony Releases](https://github.com/umutozen/stormprobe/releases), wypakuj archiwum i przenieś plik binarny do katalogu w PATH:
 
 ```bash
-go run ./cmd https://example.com
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
 
-go build -o stormprobe ./cmd
-./stormprobe --insecure https://example.com
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### Budowanie ze źródeł (wymaga Go 1.21+)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
 ```
 
 ### Docker

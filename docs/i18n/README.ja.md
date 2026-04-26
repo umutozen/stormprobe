@@ -34,6 +34,30 @@ go build -o stormprobe ./cmd
 ./stormprobe --insecure https://example.com
 ```
 
+## インストール
+
+### バイナリ（推奨）
+[Releases ページ](https://github.com/umutozen/stormprobe/releases) からお使いのプラットフォーム向けの最新版をダウンロードし、アーカイブを展開して、バイナリを PATH のディレクトリに移動します：
+
+```bash
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
+
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### ソースからビルド（Go 1.21+ 必須）
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
+```
+
 ### Docker
 
 ```bash

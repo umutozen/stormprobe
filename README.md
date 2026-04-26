@@ -25,13 +25,28 @@ Production-grade HTTP load tester with autonomous endpoint discovery. Zero depen
 - **Docker Ready** -- Single command with bundled Katana + Httpx
 - **Cross-Platform** -- Linux, macOS, Windows binaries via GoReleaser
 
-## Quick Start
+## Installation
+
+### Binary (recommended)
+Download the latest release for your platform from the [Releases page](https://github.com/umutozen/stormprobe/releases), extract the archive, and move the binary to a directory in your PATH:
 
 ```bash
-go run ./cmd https://example.com
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --version
 
-go build -o stormprobe ./cmd
-./stormprobe --insecure https://example.com
+# Windows (PowerShell) — move to any folder in PATH, e.g. C:\Windows\System32
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### Build from source (requires Go 1.21+)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
 ```
 
 ### Docker

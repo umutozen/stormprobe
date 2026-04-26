@@ -25,13 +25,28 @@ Produktionsreifer HTTP-Lasttester mit autonomer Endpoint-Erkennung (Endpunkterke
 - **Docker-fertig** -- Einzelner Befehl mit gebundeltem Katana + Httpx
 - **Plattformuebergreifend** -- Linux-, macOS-, Windows-Binaerdateien ueber GoReleaser
 
-## Schnellstart
+## Installation
+
+### Binary (empfohlen)
+Laden Sie die neueste Version für Ihre Plattform von der [Releases-Seite](https://github.com/umutozen/stormprobe/releases) herunter, entpacken Sie das Archiv und verschieben Sie die Binärdatei in ein Verzeichnis in Ihrem PATH:
 
 ```bash
-go run ./cmd https://example.com
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
 
-go build -o stormprobe ./cmd
-./stormprobe --insecure https://example.com
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### Aus dem Quellcode bauen (erfordert Go 1.21+)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
 ```
 
 ### Docker

@@ -253,10 +253,10 @@ func main() {
 	ihlaller := alert.Check(results, cfg.Alert)
 	if len(ihlaller) > 0 {
 		fmt.Println("\n===========================================================")
-		fmt.Println("                   ALERT — EŞİK AŞILDI")
+		fmt.Println("                   ALERT — THRESHOLD BREACHED")
 		fmt.Println("===========================================================")
 		for _, ih := range ihlaller {
-			fmt.Fprintf(os.Stderr, "  [!] %s\n", ih.Mesaj)
+			fmt.Fprintf(os.Stderr, "  [!] %s\n", ih.Message)
 		}
 		fmt.Println("===========================================================")
 		os.Exit(1)

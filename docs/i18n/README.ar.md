@@ -35,6 +35,30 @@ go build -o stormprobe ./cmd
 ./stormprobe --insecure https://example.com
 ```
 
+## التثبيت
+
+### ملف ثنائي (موصى به)
+قم بتنزيل أحدث إصدار لمنصتك من [صفحة الإصدارات](https://github.com/umutozen/stormprobe/releases) واستخرج الأرشيف وانقل الملف الثنائي إلى مجلد في PATH:
+
+```bash
+# Linux / macOS
+chmod +x stormprobe
+sudo mv stormprobe /usr/local/bin/
+stormprobe --no-discovery https://example.com
+
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+stormprobe --no-discovery https://example.com
+```
+
+### البناء من المصدر (يتطلب Go 1.21+)
+```bash
+git clone https://github.com/umutozen/stormprobe.git
+cd stormprobe
+go build -o stormprobe ./cmd   # Linux / macOS
+go build -o stormprobe.exe ./cmd   # Windows
+```
+
 ### Docker
 
 ```bash

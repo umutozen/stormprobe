@@ -7,7 +7,7 @@ import (
 )
 
 type Ihlal struct {
-	Mesaj string
+	Message string
 }
 
 func Check(sonuclar []config.PhaseResult, cfg config.AlertConfig) []Ihlal {
@@ -20,7 +20,7 @@ func Check(sonuclar []config.PhaseResult, cfg config.AlertConfig) []Ihlal {
 	for _, r := range sonuclar {
 		if cfg.MaxP99Ms > 0 && r.P99Ms > cfg.MaxP99Ms {
 			ihlaller = append(ihlaller, Ihlal{
-				Mesaj: fmt.Sprintf("[%s] P99 %.0fms > eşik %.0fms", r.PhaseName, r.P99Ms, cfg.MaxP99Ms),
+				Message: fmt.Sprintf("[%s] P99 %.0fms > threshold %.0fms", r.PhaseName, r.P99Ms, cfg.MaxP99Ms),
 			})
 		}
 
@@ -31,14 +31,14 @@ func Check(sonuclar []config.PhaseResult, cfg config.AlertConfig) []Ihlal {
 			}
 			if errorRate > cfg.MaxErrorRate {
 				ihlaller = append(ihlaller, Ihlal{
-					Mesaj: fmt.Sprintf("[%s] Hata oranı %.1f%% > eşik %.1f%%", r.PhaseName, errorRate, cfg.MaxErrorRate),
+					Message: fmt.Sprintf("[%s] Error rate %.1f%% > threshold %.1f%%", r.PhaseName, errorRate, cfg.MaxErrorRate),
 				})
 			}
 		}
 
 		if cfg.MinReqPerSec > 0 && r.ReqPerSec < cfg.MinReqPerSec {
 			ihlaller = append(ihlaller, Ihlal{
-				Mesaj: fmt.Sprintf("[%s] req/s %.1f < min eşik %.1f", r.PhaseName, r.ReqPerSec, cfg.MinReqPerSec),
+				Message: fmt.Sprintf("[%s] req/s %.1f < min threshold %.1f", r.PhaseName, r.ReqPerSec, cfg.MinReqPerSec),
 			})
 		}
 	}
