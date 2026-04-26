@@ -11,6 +11,13 @@ type PhaseStep struct {
 	Name         string
 	Concurrency  int
 	ReqPerWorker int
+	Duration     time.Duration
+}
+
+type AlertConfig struct {
+	MaxP99Ms     float64
+	MaxErrorRate float64
+	MinReqPerSec float64
 }
 
 type ErrorCounts struct {
@@ -53,6 +60,8 @@ type Config struct {
 	SpikePeak      int
 	ReqPerWorker   int
 	Headers        map[string]string
+	PhaseDuration  time.Duration
+	Alert          AlertConfig
 }
 
 var UserAgents = []string{
@@ -64,10 +73,10 @@ var UserAgents = []string{
 
 func (c Config) RampSteps() []PhaseStep {
 	return []PhaseStep{
-		{"Ramp L1 (5 vu)", 5, c.ReqPerWorker},
-		{"Ramp L2 (15 vu)", 15, c.ReqPerWorker},
-		{"Ramp L3 (30 vu)", 30, c.ReqPerWorker},
-		{fmt.Sprintf("Ramp L4 (%d vu)", c.RampPeak), c.RampPeak, c.ReqPerWorker},
+		{Name: "Ramp L1 (5 vu)", Concurrency: 5, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
+		{Name: "Ramp L2 (15 vu)", Concurrency: 15, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
+		{Name: "Ramp L3 (30 vu)", Concurrency: 30, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
+		{Name: fmt.Sprintf("Ramp L4 (%d vu)", c.RampPeak), Concurrency: c.RampPeak, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
 	}
 }
 
@@ -78,6 +87,7 @@ func (c Config) SustainedSteps() []PhaseStep {
 			Name:         fmt.Sprintf("Sustained wave #%d", i+1),
 			Concurrency:  c.SustainedConc,
 			ReqPerWorker: c.ReqPerWorker,
+			Duration:     c.PhaseDuration,
 		}
 	}
 	return steps
@@ -89,12 +99,12 @@ func (c Config) SpikeSteps() []PhaseStep {
 		start = 10
 	}
 	return []PhaseStep{
-		{fmt.Sprintf("Spike start (%d vu)", start), start, c.ReqPerWorker},
-		{fmt.Sprintf("Spike peak (%d vu)", c.SpikePeak), c.SpikePeak, c.ReqPerWorker},
-		{"Spike cooldown (50 vu)", 50, c.ReqPerWorker},
+		{Name: fmt.Sprintf("Spike start (%d vu)", start), Concurrency: start, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
+		{Name: fmt.Sprintf("Spike peak (%d vu)", c.SpikePeak), Concurrency: c.SpikePeak, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
+		{Name: "Spike cooldown (50 vu)", Concurrency: 50, ReqPerWorker: c.ReqPerWorker, Duration: c.PhaseDuration},
 	}
 }
 
 func (c Config) RecoveryStep() PhaseStep {
-	return PhaseStep{"Recovery check", 10, 10}
+	return PhaseStep{Name: "Recovery check", Concurrency: 10, ReqPerWorker: 10}
 }

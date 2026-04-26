@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/umutozen/stormprobe/internal/alert"
 	"github.com/umutozen/stormprobe/internal/config"
 	"github.com/umutozen/stormprobe/internal/discovery"
 	"github.com/umutozen/stormprobe/internal/report"
@@ -55,6 +56,7 @@ func main() {
 	concSpike := flag.Int("concurrency-spike", 250, "Peak concurrency for spike phase")
 	reqPerWorker := flag.Int("req-per-worker", 15, "Requests per worker per phase step")
 	timeout := flag.Duration("timeout", 10*time.Second, "Per-request timeout")
+	phaseDuration := flag.Duration("duration", 0, "Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set")
 	endpointsFile := flag.String("endpoints", "", "Endpoints file (one path per line, skips discovery)")
 	noDiscovery := flag.Bool("no-discovery", false, "Skip katana+httpx, use / only")
 	outputDir := flag.String("output", "./outputs", "Output directory for reports")
@@ -62,6 +64,9 @@ func main() {
 	katanaPath := flag.String("katana-path", "", "Custom katana binary path")
 	httpxPath := flag.String("httpx-path", "", "Custom httpx binary path")
 	insecure := flag.Bool("insecure", false, "Skip TLS certificate verification")
+	alertP99 := flag.Float64("alert-p99", 0, "Fail (exit 1) if P99 latency exceeds Xms in any phase")
+	alertErrorRate := flag.Float64("alert-error-rate", 0, "Fail (exit 1) if error rate exceeds X%% in any phase")
+	alertMinRPS := flag.Float64("alert-rps", 0, "Fail (exit 1) if req/s falls below X in any phase")
 	var headers headerFlag
 	flag.Var(&headers, "header", "Custom HTTP header (repeatable): -header 'Authorization: Bearer TOKEN'")
 	flag.Var(&headers, "H", "Alias for --header")
@@ -119,6 +124,12 @@ func main() {
 		SpikePeak:      *concSpike,
 		ReqPerWorker:   *reqPerWorker,
 		Headers:        parseHeaders(headers),
+		PhaseDuration:  *phaseDuration,
+		Alert: config.AlertConfig{
+			MaxP99Ms:     *alertP99,
+			MaxErrorRate: *alertErrorRate,
+			MinReqPerSec: *alertMinRPS,
+		},
 	}
 
 	tlsConfig := &tls.Config{}
@@ -237,6 +248,18 @@ func main() {
 		if writeErr := report.WriteHTML(targetURL, cfg.OutputDir, results, endpoints); writeErr != nil {
 			fmt.Fprintf(os.Stderr, "[!] %v\n", writeErr)
 		}
+	}
+
+	ihlaller := alert.Check(results, cfg.Alert)
+	if len(ihlaller) > 0 {
+		fmt.Println("\n===========================================================")
+		fmt.Println("                   ALERT — EŞİK AŞILDI")
+		fmt.Println("===========================================================")
+		for _, ih := range ihlaller {
+			fmt.Fprintf(os.Stderr, "  [!] %s\n", ih.Mesaj)
+		}
+		fmt.Println("===========================================================")
+		os.Exit(1)
 	}
 
 	fmt.Println("===========================================================")

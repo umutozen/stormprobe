@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"context"
 	"net/http"
 	"sort"
 	"sync"
@@ -11,34 +12,51 @@ import (
 )
 
 func RunPhase(step config.PhaseStep, targetURL string, client *http.Client, endpoints []string, headers map[string]string) config.PhaseResult {
-	total := step.Concurrency * step.ReqPerWorker
 	var successful, failed int32
 	var timeouts, resets, refused, http5xx, http4xx, other int32
 
 	statusMu := newLock()
 	statusDist := make(map[int]int)
 	latencyMu := newLock()
-	latencies := make([]float64, 0, total)
+	latencies := make([]float64, 0, step.Concurrency*step.ReqPerWorker)
 
-	jobs := make(chan int, total)
 	var wg sync.WaitGroup
 	start := time.Now()
 
-	for w := 0; w < step.Concurrency; w++ {
-		wg.Add(1)
-		go func(id int) {
-			defer wg.Done()
-			executeWorker(id, jobs, client, targetURL, endpoints,
-				&successful, &failed, &timeouts, &resets, &refused, &http5xx, &http4xx, &other,
-				&latencies, latencyMu, statusDist, statusMu, headers)
-		}(w)
-	}
+	if step.Duration > 0 {
+		ctx, cancel := context.WithTimeout(context.Background(), step.Duration)
+		defer cancel()
 
-	for j := 0; j < total; j++ {
-		jobs <- j
+		for w := 0; w < step.Concurrency; w++ {
+			wg.Add(1)
+			go func(id int) {
+				defer wg.Done()
+				executeWorkerDuration(ctx, id, client, targetURL, endpoints,
+					&successful, &failed, &timeouts, &resets, &refused, &http5xx, &http4xx, &other,
+					&latencies, latencyMu, statusDist, statusMu, headers)
+			}(w)
+		}
+		wg.Wait()
+	} else {
+		total := step.Concurrency * step.ReqPerWorker
+		jobs := make(chan int, total)
+
+		for w := 0; w < step.Concurrency; w++ {
+			wg.Add(1)
+			go func(id int) {
+				defer wg.Done()
+				executeWorker(id, jobs, client, targetURL, endpoints,
+					&successful, &failed, &timeouts, &resets, &refused, &http5xx, &http4xx, &other,
+					&latencies, latencyMu, statusDist, statusMu, headers)
+			}(w)
+		}
+
+		for j := 0; j < total; j++ {
+			jobs <- j
+		}
+		close(jobs)
+		wg.Wait()
 	}
-	close(jobs)
-	wg.Wait()
 
 	elapsed := time.Since(start)
 	totalCount := int(successful) + int(failed)
