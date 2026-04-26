@@ -37,8 +37,11 @@ go build -o stormprobe ./cmd
 ### Docker
 
 ```bash
-docker run --rm -v $(pwd)/outputs:/app/outputs \
-  ghcr.io/umutozen/stormprobe --insecure https://example.com
+# Linux / macOS
+docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
+
+# Windows (PowerShell)
+docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
 ```
 
 ## Shi yong fang fa
