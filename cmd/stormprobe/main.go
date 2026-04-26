@@ -77,10 +77,10 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("===========================================================")
-	fmt.Printf("  StormProbe v%s -- HTTP Load Tester\n", config.Version)
+	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+	fmt.Printf("  StormProbe v%s  |  Crawl. Discover. Break.\n", config.Version)
 	fmt.Println("  github.com/umutozen/stormprobe")
-	fmt.Println("===========================================================")
+	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 
 	targetURL := ""
 	if flag.NArg() > 0 {
@@ -108,7 +108,7 @@ func main() {
 		fmt.Fprintf(os.Stderr, "Unsupported scheme: %s (only http and https)\n", parsed.Scheme)
 		os.Exit(1)
 	}
-	fmt.Printf("\n  Target: %s\n", targetURL)
+	fmt.Printf("\n  Target  : %s\n", targetURL)
 
 	cfg := config.Config{
 		Target:         targetURL,
@@ -135,7 +135,7 @@ func main() {
 	tlsConfig := &tls.Config{}
 	if *insecure {
 		tlsConfig.InsecureSkipVerify = true
-		fmt.Println("  [!] TLS verification disabled (--insecure)")
+		fmt.Println("  Warning : TLS verification disabled (--insecure)")
 	}
 
 	client := &http.Client{
@@ -160,7 +160,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Println("\n[*] Warming up...")
+	fmt.Println("\n  Warmup  : sending 3 requests to prime connection pool...")
 	for i := 0; i < 3; i++ {
 		req, reqErr := http.NewRequest("GET", targetURL, nil)
 		if reqErr != nil {
@@ -178,21 +178,21 @@ func main() {
 	var results []config.PhaseResult
 
 	phaseHeader := func(name string) {
-		fmt.Printf("\n+==================================================+\n")
-		fmt.Printf("|  %-47s |\n", name)
-		fmt.Printf("+==================================================+\n")
+		fmt.Printf("\n┌─────────────────────────────────────────────────────────┐\n")
+		fmt.Printf("│  %-55s│\n", name)
+		fmt.Printf("└─────────────────────────────────────────────────────────┘\n")
 	}
 	tableHeader := func() {
-		fmt.Println("+------------------------+------+---------+--------+--------+--------+--------+---------+")
-		fmt.Println("| Scenario               | Conc | Success%| Avg ms | P50 ms | P95 ms | P99 ms |  req/s  |")
-		fmt.Println("+------------------------+------+---------+--------+--------+--------+--------+---------+")
+		fmt.Println("  ┌────────────────────────┬──────┬─────────┬────────┬────────┬────────┬────────┬─────────┐")
+		fmt.Println("  │ Scenario               │ Conc │ Success │ Avg ms │ P50 ms │ P95 ms │ P99 ms │  req/s  │")
+		fmt.Println("  ├────────────────────────┼──────┼─────────┼────────┼────────┼────────┼────────┼─────────┤")
 	}
 	tableRow := func(r config.PhaseResult) {
-		fmt.Printf("| %-22s | %4d | %5.1f%%  | %6.0f | %6.0f | %6.0f | %6.0f | %7.1f |\n",
+		fmt.Printf("  │ %-22s │ %4d │ %5.1f%%  │ %6.0f │ %6.0f │ %6.0f │ %6.0f │ %7.1f │\n",
 			r.PhaseName, r.Concurrency, r.SuccessRate, r.AvgMs, r.P50Ms, r.P95Ms, r.P99Ms, r.ReqPerSec)
 	}
 	tableFooter := func() {
-		fmt.Println("+------------------------+------+---------+--------+--------+--------+--------+---------+")
+		fmt.Println("  └────────────────────────┴──────┴─────────┴────────┴────────┴────────┴────────┴─────────┘")
 	}
 
 	phaseHeader("PHASE 1: RAMP-UP")
@@ -229,7 +229,7 @@ func main() {
 	tableFooter()
 
 	phaseHeader("PHASE 4: RECOVERY")
-	fmt.Println("[*] Waiting 10 seconds post-spike...")
+	fmt.Println("  Cooldown : waiting 10 seconds post-spike...")
 	time.Sleep(10 * time.Second)
 	tableHeader()
 	r := runner.RunPhase(cfg.RecoveryStep(), targetURL, client, endpoints, cfg.Headers)
@@ -252,17 +252,19 @@ func main() {
 
 	ihlaller := alert.Check(results, cfg.Alert)
 	if len(ihlaller) > 0 {
-		fmt.Println("\n===========================================================")
-		fmt.Println("                   ALERT — THRESHOLD BREACHED")
-		fmt.Println("===========================================================")
+		fmt.Fprintln(os.Stderr, "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+		fmt.Fprintln(os.Stderr, "  ALERT  : threshold breached — CI/CD gate failed")
+		fmt.Fprintln(os.Stderr, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 		for _, ih := range ihlaller {
-			fmt.Fprintf(os.Stderr, "  [!] %s\n", ih.Message)
+			fmt.Fprintf(os.Stderr, "  [FAIL] %s\n", ih.Message)
 		}
-		fmt.Println("===========================================================")
+		fmt.Fprintln(os.Stderr, "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 		os.Exit(1)
 	}
 
-	fmt.Println("===========================================================")
+	fmt.Println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+	fmt.Println("  Done. Reports saved to", cfg.OutputDir)
+	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 }
 
 func loadEndpointsFile(path string) []string {
