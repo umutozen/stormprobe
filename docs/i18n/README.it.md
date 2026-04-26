@@ -75,6 +75,10 @@ Flags:
   --httpx-path            string    Custom httpx binary path
   --insecure                        Skip TLS certificate verification
   --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
+  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
+  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
+  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
 ```
 
 ### Esempi
@@ -87,6 +91,12 @@ stormprobe --insecure --endpoints endpoints.txt https://example.com
 stormprobe --insecure --format json --output ./results https://example.com
 
 stormprobe --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
+
+stormprobe --insecure --duration 30s --no-discovery https://example.com
+
+stormprobe --insecure --duration 1m --concurrency-spike 300 https://example.com
+
+stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 ```
 
 ## Fasi di test
