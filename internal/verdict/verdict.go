@@ -6,16 +6,14 @@ import (
 	"github.com/umutozen/stormprobe/internal/config"
 )
 
-// Eşik sabitleri — iş mantığı burada toplanır.
 const (
-	p99DegradedMs = 2000.0 // P99 bu değeri aşarsa degraded sayılır
-	p99CriticalMs = 5000.0 // P99 bu değeri aşarsa critical sayılır
-	errorRateSafe = 1.0    // % hata oranı güvenli sınır
-	errorRateFail = 2.0    // % hata oranı kritik sınır
-	recoveryRatio = 1.5    // recovery P99 / baseline P99 oranı — bu aşılırsa toparlanma tam değil
+	p99DegradedMs = 2000.0
+	p99CriticalMs = 5000.0
+	errorRateSafe = 1.0
+	errorRateFail = 2.0
+	recoveryRatio = 1.5
 )
 
-// Rating sunucunun genel değerlendirmesidir.
 type Rating string
 
 const (
@@ -25,12 +23,11 @@ const (
 	RatingUnstable Rating = "High Risk"
 )
 
-// Verdict testin bütünsel yorumudur.
 type Verdict struct {
 	Rating           Rating
 	SafeConcurrency  int
-	DegradationAt    int // 0 = görülmedi
-	FailurePoint     int // 0 = görülmedi
+	DegradationAt    int
+	FailurePoint     int
 	BottleneckCause  string
 	BottleneckDetail string
 	PriorityChecks   []string
@@ -38,7 +35,6 @@ type Verdict struct {
 	Recommendation   string
 }
 
-// Analyze tüm faz sonuçlarını değerlendirerek bir Verdict üretir.
 func Analyze(results []config.PhaseResult) Verdict {
 	if len(results) == 0 {
 		return Verdict{Rating: RatingHealthy, Recommendation: "No data to analyze."}
@@ -53,7 +49,6 @@ func Analyze(results []config.PhaseResult) Verdict {
 		hasRecovery     bool
 	)
 
-	// Baseline: ilk fazın P99'u
 	baselineP99 = results[0].P99Ms
 
 	for _, r := range results {
@@ -66,19 +61,16 @@ func Analyze(results []config.PhaseResult) Verdict {
 			continue
 		}
 
-		// Güvenli bölge: hata < %1 ve P99 < 2s
 		if errRate < errorRateSafe && r.P99Ms < p99DegradedMs {
 			if r.Concurrency > safeConcurrency {
 				safeConcurrency = r.Concurrency
 			}
 		}
 
-		// Bozulma başlangıcı
 		if degradationAt == 0 && r.P99Ms >= p99DegradedMs {
 			degradationAt = r.Concurrency
 		}
 
-		// Kritik eşik
 		if failurePoint == 0 && (r.P99Ms >= p99CriticalMs || errRate >= errorRateFail) {
 			failurePoint = r.Concurrency
 		}
@@ -111,7 +103,6 @@ func errorRate(r config.PhaseResult) float64 {
 	return float64(r.Failed) / float64(r.TotalRequests) * 100
 }
 
-// diagnoseBottleneck hata tipine göre olası nedeni tahmin eder.
 func diagnoseBottleneck(results []config.PhaseResult) (cause, detail string) {
 	var timeouts, resets, refused, http5xx int
 	for _, r := range results {
@@ -145,7 +136,6 @@ func diagnoseBottleneck(results []config.PhaseResult) (cause, detail string) {
 	}
 }
 
-// priorityChecks bottleneck nedenine göre operasyon ekibine aksiyon listesi üretir.
 func priorityChecks(cause string) []string {
 	switch cause {
 	case "Application/DB processing bottleneck":
@@ -178,7 +168,6 @@ func priorityChecks(cause string) []string {
 	}
 }
 
-// isdominant bir hata tipinin toplam hataların %60'ından fazlasını oluşturup oluşturmadığını kontrol eder.
 func isdominant(count, total int) bool {
 	return total > 0 && float64(count)/float64(total) >= 0.60
 }
