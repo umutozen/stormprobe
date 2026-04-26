@@ -500,9 +500,9 @@ tbody tr:last-child td {
 </html>`,
 		target,
 		target, timestamp, totalDuration,
+		verdictHTML,
 		successColor, overallSuccess,
 		totalRequests, totalFailed, len(results), len(endpoints),
-		verdictHTML,
 		chartHTML, tableHTML, errorHTML,
 		len(endpoints), endpointHTML,
 		config.Version, timestamp)
@@ -736,11 +736,11 @@ func buildVerdictCard(v verdict.Verdict) string {
     </div>
     <div class="stat-card">
       <div class="value" style="font-size:24px;color:var(--accent-amber)">%s</div>
-      <div class="label">Degradation At</div>
+      <div class="label">Perf. Degradation At</div>
     </div>
     <div class="stat-card">
       <div class="value" style="font-size:24px;color:var(--accent-red)">%s</div>
-      <div class="label">Failure Point</div>
+      <div class="label">Critical Failures At</div>
     </div>
     <div class="stat-card">
       <div class="value" style="font-size:24px;color:%s">%s</div>
@@ -761,11 +761,22 @@ func buildVerdictCard(v verdict.Verdict) string {
 	}
 
 	html += fmt.Sprintf(`
-  <div style="padding:16px;background:var(--bg-primary);border-radius:12px;border:1px solid var(--border)">
+  <div style="padding:16px;background:var(--bg-primary);border-radius:12px;border:1px solid var(--border);margin-bottom:12px">
     <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Recommendation</div>
     <div style="font-size:14px;color:var(--text-primary)">%s</div>
-  </div>
-</div>`, v.Recommendation)
+  </div>`, v.Recommendation)
 
+	if len(v.PriorityChecks) > 0 {
+		html += `
+  <div style="padding:16px;background:var(--bg-primary);border-radius:12px;border:1px solid var(--border)">
+    <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Priority Checks</div>
+    <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:8px">`
+		for _, check := range v.PriorityChecks {
+			html += fmt.Sprintf(`<li style="font-size:13px;color:var(--text-secondary);display:flex;gap:8px"><span style="color:var(--accent-amber)">&#8212;</span>%s</li>`, check)
+		}
+		html += `</ul></div>`
+	}
+
+	html += `</div>`
 	return html
 }

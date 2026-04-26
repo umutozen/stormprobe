@@ -239,7 +239,7 @@ func main() {
 	tableFooter()
 
 	printErrorSummary(results)
-	v := verdict.Analyse(results)
+	v := verdict.Analyze(results)
 	printVerdict(v)
 
 	if cfg.Format == "json" || cfg.Format == "both" {
@@ -347,34 +347,42 @@ func printVerdict(v verdict.Verdict) {
 	fmt.Println("  FINAL VERDICT")
 	fmt.Println(sep)
 
-	fmt.Printf("  Rating           : %s\n", v.Rating)
+	fmt.Printf("  Rating                          : %s\n", v.Rating)
 
 	if v.SafeConcurrency > 0 {
-		fmt.Printf("  Safe concurrency : up to %d virtual users\n", v.SafeConcurrency)
+		fmt.Printf("  Safe concurrency                : up to %d virtual users\n", v.SafeConcurrency)
 	} else {
-		fmt.Println("  Safe concurrency : could not determine")
+		fmt.Println("  Safe concurrency                : could not determine")
 	}
 
 	if v.DegradationAt > 0 {
-		fmt.Printf("  Degradation at   : %d vu\n", v.DegradationAt)
+		fmt.Printf("  Perf. degradation starts at     : %d vu\n", v.DegradationAt)
 	}
 	if v.FailurePoint > 0 {
-		fmt.Printf("  Failure point    : %d vu\n", v.FailurePoint)
+		fmt.Printf("  Critical failures start at      : %d vu\n", v.FailurePoint)
 	}
 
 	recoveryStr := "OK"
 	if !v.RecoveryOK {
 		recoveryStr = "FAILED — server did not recover after spike"
 	}
-	fmt.Printf("  Recovery         : %s\n", recoveryStr)
+	fmt.Printf("  Recovery                        : %s\n", recoveryStr)
 
 	if v.BottleneckCause != "None" {
 		fmt.Println()
-		fmt.Printf("  Bottleneck       : %s\n", v.BottleneckCause)
-		fmt.Printf("  Detail           : %s\n", v.BottleneckDetail)
+		fmt.Printf("  Bottleneck    : %s\n", v.BottleneckCause)
+		fmt.Printf("  Detail        : %s\n", v.BottleneckDetail)
 	}
 
 	fmt.Println()
-	fmt.Printf("  Recommendation   : %s\n", v.Recommendation)
+	fmt.Printf("  Recommendation : %s\n", v.Recommendation)
+
+	if len(v.PriorityChecks) > 0 {
+		fmt.Println()
+		fmt.Println("  Priority checks:")
+		for _, check := range v.PriorityChecks {
+			fmt.Printf("    - %s\n", check)
+		}
+	}
 	fmt.Println(sep)
 }

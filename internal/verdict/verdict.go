@@ -8,21 +8,21 @@ import (
 
 // Eşik sabitleri — iş mantığı burada toplanır.
 const (
-	p99DegradedMs  = 2000.0 // P99 bu değeri aşarsa degraded sayılır
-	p99CriticalMs  = 5000.0 // P99 bu değeri aşarsa critical sayılır
-	errorRateSafe  = 1.0    // % hata oranı güvenli sınır
-	errorRateFail  = 2.0    // % hata oranı kritik sınır
-	recoveryRatio  = 1.5    // recovery P99 / baseline P99 oranı — bu aşılırsa toparlanma tam değil
+	p99DegradedMs = 2000.0 // P99 bu değeri aşarsa degraded sayılır
+	p99CriticalMs = 5000.0 // P99 bu değeri aşarsa critical sayılır
+	errorRateSafe = 1.0    // % hata oranı güvenli sınır
+	errorRateFail = 2.0    // % hata oranı kritik sınır
+	recoveryRatio = 1.5    // recovery P99 / baseline P99 oranı — bu aşılırsa toparlanma tam değil
 )
 
 // Rating sunucunun genel değerlendirmesidir.
 type Rating string
 
 const (
-	RatingHealthy  Rating = "Healthy"
-	RatingDegraded Rating = "Degraded"
-	RatingCritical Rating = "Critical"
-	RatingUnstable Rating = "Unstable" // spike sonrası toparlanamadı
+	RatingHealthy         Rating = "Healthy"
+	RatingDegraded        Rating = "Degraded Under Load"
+	RatingCritical        Rating = "Not Production Ready"
+	RatingUnstable        Rating = "High Risk"
 )
 
 // Verdict testin bütünsel yorumudur.
@@ -33,12 +33,13 @@ type Verdict struct {
 	FailurePoint     int    // 0 = görülmedi
 	BottleneckCause  string
 	BottleneckDetail string
+	PriorityChecks   []string
 	RecoveryOK       bool
 	Recommendation   string
 }
 
-// Analyse tüm faz sonuçlarını değerlendirerek bir Verdict üretir.
-func Analyse(results []config.PhaseResult) Verdict {
+// Analyze tüm faz sonuçlarını değerlendirerek bir Verdict üretir.
+func Analyze(results []config.PhaseResult) Verdict {
 	if len(results) == 0 {
 		return Verdict{Rating: RatingHealthy, Recommendation: "No data to analyse."}
 	}
@@ -86,6 +87,7 @@ func Analyse(results []config.PhaseResult) Verdict {
 	recoveryOK := !hasRecovery || (baselineP99 > 0 && recoveryP99 <= baselineP99*recoveryRatio)
 
 	cause, detail := diagnoseBottleneck(results)
+	priority := priorityChecks(cause)
 	rating := computeRating(failurePoint, degradationAt, recoveryOK)
 	recommendation := buildRecommendation(rating, cause, safeConcurrency)
 
@@ -96,6 +98,7 @@ func Analyse(results []config.PhaseResult) Verdict {
 		FailurePoint:     failurePoint,
 		BottleneckCause:  cause,
 		BottleneckDetail: detail,
+		PriorityChecks:   priority,
 		RecoveryOK:       recoveryOK,
 		Recommendation:   recommendation,
 	}
@@ -110,16 +113,15 @@ func errorRate(r config.PhaseResult) float64 {
 
 // diagnoseBottleneck hata tipine göre olası nedeni tahmin eder.
 func diagnoseBottleneck(results []config.PhaseResult) (cause, detail string) {
-	var timeouts, resets, refused, http5xx, http4xx int
+	var timeouts, resets, refused, http5xx int
 	for _, r := range results {
 		timeouts += r.Errors.Timeout
 		resets += r.Errors.ConnectionReset
 		refused += r.Errors.ConnectionRefused
 		http5xx += r.Errors.HTTP5xx
-		http4xx += r.Errors.HTTP4xx
 	}
 
-	totalErrors := timeouts + resets + refused + http5xx + http4xx
+	totalErrors := timeouts + resets + refused + http5xx
 	if totalErrors == 0 {
 		return "None", "No errors detected across all phases."
 	}
@@ -139,7 +141,40 @@ func diagnoseBottleneck(results []config.PhaseResult) (cause, detail string) {
 			"Multiple error types suggest resource exhaustion across layers (network, application, and DB)."
 	default:
 		return "Mixed / undetermined",
-			fmt.Sprintf("Timeouts: %d | Resets: %d | Refused: %d | 5xx: %d | 4xx: %d", timeouts, resets, refused, http5xx, http4xx)
+			fmt.Sprintf("Timeouts: %d | Resets: %d | Refused: %d | 5xx: %d", timeouts, resets, refused, http5xx)
+	}
+}
+
+// priorityChecks bottleneck nedenine göre operasyon ekibine aksiyon listesi üretir.
+func priorityChecks(cause string) []string {
+	switch cause {
+	case "Application/DB processing bottleneck":
+		return []string{
+			"Review slow query logs — identify queries exceeding 1s",
+			"Analyze DB connection pool size vs peak concurrency",
+			"Check for blocking I/O or synchronous operations on hot paths",
+			"Profile thread pool saturation under sustained load",
+		}
+	case "Connection pool / infrastructure capacity exhausted":
+		return []string{
+			"Increase reverse proxy (nginx/HAProxy) worker connections",
+			"Tune OS-level TCP backlog (net.core.somaxconn)",
+			"Review upstream service connection limits",
+			"Check keep-alive settings on load balancer",
+		}
+	case "Server-side application errors under load":
+		return []string{
+			"Inspect application exception logs during high-concurrency window",
+			"Check memory limits — OOM killer may be terminating worker processes",
+			"Review rate limiting or circuit breaker configuration",
+			"Analyze upstream dependency latency under load",
+		}
+	default:
+		return []string{
+			"Correlate server logs with test timestamps",
+			"Monitor CPU, memory, and network saturation during load",
+			"Analyze upstream dependency latency",
+		}
 	}
 }
 
