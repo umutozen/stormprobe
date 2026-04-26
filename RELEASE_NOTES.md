@@ -1,12 +1,12 @@
-# 🚀 StormProbe v1.0.0 — Initial Release
+# StormProbe v1.0.0 — Initial Release
 
 **StormProbe** is a zero-dependency, production-grade HTTP load testing CLI tool with autonomous endpoint discovery.
 
 ---
 
-## ✨ Highlights
+## Highlights
 
-- **4-Phase Load Test** — Ramp-Up → Sustained → Spike → Recovery pipeline
+- **4-Phase Load Test** — Ramp-Up, Sustained, Spike, Recovery pipeline
 - **Autonomous Discovery** — Katana (static + JS/headless) crawl + Httpx probing to find all live endpoints automatically
 - **Custom Headers** — `-H "Authorization: Bearer TOKEN"` propagated across all phases and discovery
 - **Rich Reports** — Self-contained HTML report with SVG latency chart and error distribution bars, plus JSON output
@@ -17,7 +17,7 @@
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Binary (recommended)
 Download the archive for your platform from the Assets section below, extract, and run:
@@ -37,7 +37,7 @@ docker run --rm ghcr.io/umutozen/stormprobe:v1.0.0 https://your-target.com
 
 ---
 
-## 🔧 Quick Usage
+## Quick Usage
 
 ```bash
 # Full autonomous discovery + all phases
@@ -55,7 +55,7 @@ stormprobe --endpoints ./paths.txt https://your-target.com
 
 ---
 
-## 📋 CLI Flags
+## CLI Flags
 
 | Flag | Default | Description |
 |------|---------|-------------|
@@ -73,7 +73,7 @@ stormprobe --endpoints ./paths.txt https://your-target.com
 
 ---
 
-## 📄 See Also
+## See Also
 
 - [README](https://github.com/umutozen/stormprobe#readme) — Full documentation (16 languages)
 - [CHANGELOG](https://github.com/umutozen/stormprobe/blob/main/CHANGELOG.md) — What's new
