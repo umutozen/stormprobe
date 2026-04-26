@@ -3,7 +3,7 @@ WORKDIR /app
 COPY go.mod ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o stormprobe ./cmd
+RUN CGO_ENABLED=0 go build -ldflags="-s -w" -o stormprobe ./cmd/stormprobe
 
 FROM projectdiscovery/katana:latest AS katana
 FROM projectdiscovery/httpx:latest AS httpx
