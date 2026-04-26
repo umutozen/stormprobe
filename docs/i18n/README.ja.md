@@ -36,7 +36,7 @@ go build -o stormprobe ./cmd/stormprobe
 
 ## インストール
 
-### バイナリ（推奨）
+### バイナリをダウンロード *（Go 不要）*
 [Releases ページ](https://github.com/umutozen/stormprobe/releases) からお使いのプラットフォーム向けの最新版をダウンロードし、アーカイブを展開して、バイナリを PATH のディレクトリに移動します：
 
 ```bash
@@ -50,13 +50,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *（Go 1.21+ 必須、最も簡単）*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### ソースからビルド（Go 1.21+ 必須）
+### ソースからビルド *（Go 1.21+ 必須）*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

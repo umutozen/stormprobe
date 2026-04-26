@@ -27,7 +27,7 @@ Produkcyjne narzedzie do testow obciazeniowych HTTP z autonomicznym wykrywaniem 
 
 ## Instalacja
 
-### Plik binarny (zalecane)
+### Pobierz plik binarny *(bez Go)*
 Pobierz najnowszą wersję dla swojej platformy ze [strony Releases](https://github.com/umutozen/stormprobe/releases), wypakuj archiwum i przenieś plik binarny do katalogu w PATH:
 
 ```bash
@@ -41,13 +41,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *(wymaga Go 1.21+, najprostsza metoda)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### Budowanie ze źródeł (wymaga Go 1.21+)
+### Budowanie ze źródeł *(wymaga Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

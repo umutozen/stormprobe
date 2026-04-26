@@ -27,7 +27,7 @@ Produktionsreifer HTTP-Lasttester mit autonomer Endpoint-Erkennung (Endpunkterke
 
 ## Installation
 
-### Binary (empfohlen)
+### Binärdatei herunterladen *(kein Go erforderlich)*
 Laden Sie die neueste Version für Ihre Plattform von der [Releases-Seite](https://github.com/umutozen/stormprobe/releases) herunter, entpacken Sie das Archiv und verschieben Sie die Binärdatei in ein Verzeichnis in Ihrem PATH:
 
 ```bash
@@ -41,13 +41,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *(erfordert Go 1.21+, einfachste Methode)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### Aus dem Quellcode bauen (erfordert Go 1.21+)
+### Aus dem Quellcode bauen *(erfordert Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

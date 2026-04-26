@@ -27,33 +27,31 @@ Production-grade HTTP load tester with autonomous endpoint discovery. Zero depen
 
 ## Installation
 
-### Binary (recommended)
-Download the latest release for your platform from the [Releases page](https://github.com/umutozen/stormprobe/releases), extract the archive, and move the binary to a directory in your PATH:
-
-```bash
-# Linux / macOS
-chmod +x stormprobe
-sudo mv stormprobe /usr/local/bin/
-stormprobe --version
-
-# Windows (PowerShell) — move to any folder in PATH, e.g. C:\Windows\System32
-Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
-stormprobe --no-discovery https://example.com
-```
-
-### go install (requires Go 1.21+)
+### go install *(requires Go 1.21+, easiest)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### Build from source (requires Go 1.21+)
+### Download binary *(no Go required)*
+Download the pre-built binary for your platform from the [Releases page](https://github.com/umutozen/stormprobe/releases), extract, and move to any directory in your PATH:
+
+```bash
+# Linux / macOS
+chmod +x stormprobe && sudo mv stormprobe /usr/local/bin/
+
+# Windows (PowerShell)
+Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
+```
+
+### Build from source *(requires Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe
-go build -o stormprobe ./cmd/stormprobe   # Linux / macOS
-go build -o stormprobe.exe ./cmd/stormprobe   # Windows
+go build -o stormprobe ./cmd/stormprobe      # Linux / macOS
+go build -o stormprobe.exe ./cmd/stormprobe  # Windows
 ```
+
 
 ### Docker
 

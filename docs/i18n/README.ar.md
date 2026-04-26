@@ -37,7 +37,7 @@ go build -o stormprobe ./cmd/stormprobe
 
 ## التثبيت
 
-### ملف ثنائي (موصى به)
+### تنزيل الملف الثنائي *(بدون Go)*
 قم بتنزيل أحدث إصدار لمنصتك من [صفحة الإصدارات](https://github.com/umutozen/stormprobe/releases) واستخرج الأرشيف وانقل الملف الثنائي إلى مجلد في PATH:
 
 ```bash
@@ -51,13 +51,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *（يتطلب Go 1.21+ - الأسهل)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### البناء من المصدر (يتطلب Go 1.21+)
+### البناء من المصدر *(يتطلب Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

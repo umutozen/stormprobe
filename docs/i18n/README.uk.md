@@ -36,7 +36,7 @@ go build -o stormprobe ./cmd/stormprobe
 
 ## Встановлення
 
-### Бінарний файл (рекомендується)
+### Завантажити бінарний файл *(без Go)*
 Завантажте останню версію для вашої платформи зі [сторінки Releases](https://github.com/umutozen/stormprobe/releases), розпакуйте архів і перемістіть бінарний файл до директорії у PATH:
 
 ```bash
@@ -50,13 +50,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *(потрібен Go 1.21+, найпростіший спосіб)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### Збірка з джерел (потрібен Go 1.21+)
+### Збірка з джерел *(потрібен Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

@@ -41,13 +41,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *(Go 1.21+ gerektirir, en kolay)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### Kaynaktan derleme (Go 1.21+ gerektirir)
+### Kaynaktan derleme *(Go 1.21+ gerektirir)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

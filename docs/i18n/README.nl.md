@@ -36,7 +36,7 @@ go build -o stormprobe ./cmd/stormprobe
 
 ## Installatie
 
-### Binair bestand (aanbevolen)
+### Binair bestand downloaden *(geen Go vereist)*
 Download de nieuwste versie voor uw platform van de [Releases-pagina](https://github.com/umutozen/stormprobe/releases), pak het archief uit en verplaats het binaire bestand naar een map in uw PATH:
 
 ```bash
@@ -50,13 +50,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *(vereist Go 1.21+, eenvoudigste methode)*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### Bouwen vanuit broncode (vereist Go 1.21+)
+### Bouwen vanuit broncode *(vereist Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe

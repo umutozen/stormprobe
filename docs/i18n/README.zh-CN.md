@@ -36,7 +36,7 @@ go build -o stormprobe ./cmd/stormprobe
 
 ## 安装
 
-### 二进制文件（推荐）
+### 下载二进制文件 *（无需 Go）*
 从 [Releases 页面](https://github.com/umutozen/stormprobe/releases) 下载适合您平台的最新版本，解压后将二进制文件移至 PATH 目录：
 
 ```bash
@@ -50,13 +50,13 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
-### go install (requires Go 1.21+)
+### go install *（需要 Go 1.21+，最简单）*
 ```bash
 go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 stormprobe --no-discovery https://example.com
 ```
 
-### 从源码构建（需要 Go 1.21+）
+### 从源码构建 *（需要 Go 1.21+）*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe
