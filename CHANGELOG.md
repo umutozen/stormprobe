@@ -7,21 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [Unreleased]
+## [1.0.0] - 2026-04-26
 
 ### Added
 
+**Duration Mode**
 - `--duration` flag: per-phase duration mode (`30s`, `1m`) using `context.WithTimeout`. Overrides `--req-per-worker` when set
+
+**Alert System**
 - `--alert-p99` flag: exit code 1 if P99 latency exceeds threshold in any phase
 - `--alert-error-rate` flag: exit code 1 if error rate exceeds threshold (%) in any phase
 - `--alert-rps` flag: exit code 1 if req/s falls below threshold in any phase
 - `internal/alert` package: threshold check logic, CI/CD integration
-
----
-
-## [1.0.0] - 2026-04-26
-
-### Added
 
 **Core Load Testing Engine**
 - 4-phase load test pipeline: Ramp-Up, Sustained, Spike, Recovery
