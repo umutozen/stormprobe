@@ -155,6 +155,9 @@ func main() {
 		if reqErr != nil {
 			continue
 		}
+		for k, v := range cfg.Headers {
+			req.Header.Set(k, v)
+		}
 		if resp, doErr := client.Do(req); doErr == nil {
 			_, _ = io.Copy(io.Discard, resp.Body)
 			resp.Body.Close()
