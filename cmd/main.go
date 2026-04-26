@@ -25,10 +25,9 @@ var validFormats = map[string]bool{
 	"both": true,
 }
 
-// headerFlag allows --header to be specified multiple times.
 type headerFlag []string
 
-func (h *headerFlag) String() string  { return strings.Join(*h, ", ") }
+func (h *headerFlag) String() string { return strings.Join(*h, ", ") }
 func (h *headerFlag) Set(v string) error {
 	if !strings.Contains(v, ":") {
 		return fmt.Errorf("header must be in 'Key: Value' format, got: %q", v)
