@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -19,6 +20,18 @@ func headlessBrowserAvailable() bool {
 	if runtime.GOOS == "windows" {
 		for _, name := range []string{"chrome.exe", "chromium.exe", "msedge.exe"} {
 			if _, err := exec.LookPath(name); err == nil {
+				return true
+			}
+		}
+		commonPaths := []string{
+			`C:\Program Files\Google\Chrome\Application\chrome.exe`,
+			`C:\Program Files (x86)\Google\Chrome\Application\chrome.exe`,
+			`C:\Program Files\Microsoft\Edge\Application\msedge.exe`,
+			`C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe`,
+			`C:\Program Files\Chromium\Application\chrome.exe`,
+		}
+		for _, p := range commonPaths {
+			if _, err := os.Stat(p); err == nil {
 				return true
 			}
 		}
