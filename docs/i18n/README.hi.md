@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Upayog
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <लक्ष्य-URL>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Ramp-Up के लिए अधिकतम समवर्तिता (डिफ़ॉल्ट 50)
+  --concurrency-sustained int       Sustained चरण के लिए समवर्तिता (डिफ़ॉल्ट 75)
+  --concurrency-spike     int       Spike के लिए अधिकतम समवर्तिता (डिफ़ॉल्ट 250)
+  --req-per-worker        int       प्रति worker प्रति चरण अनुरोध (डिफ़ॉल्ट 15)
+  --timeout               duration  प्रति अनुरोध टाइमआउट (डिफ़ॉल्ट 10s)
+  --endpoints             string    Endpoint सूची फ़ाइल (प्रति पंक्ति एक पथ)
+  --no-discovery                    katana+httpx छोड़ें, केवल रूट पथ टेस्ट करें
+  --output                string    रिपोर्ट आउटपुट निर्देशिका (डिफ़ॉल्ट ./outputs)
+  --format                string    रिपोर्ट फॉर्मेट: json, html, both (डिफ़ॉल्ट both)
+  --katana-path           string    कस्टम katana बाइनरी पथ
+  --httpx-path            string    कस्टम httpx बाइनरी पथ
+  --insecure                        TLS प्रमाणपत्र सत्यापन छोड़ें
+  --header, -H            string    कस्टम HTTP हेडर (दोहराने योग्य): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  प्रति चरण अवधि (जैसे 30s, 1m)। req-per-worker को ओवरराइड करता है
+  --alert-p99             float     किसी चरण में P99 लेटेंसी Xms से अधिक होने पर exit 1
+  --alert-error-rate      float     किसी चरण में त्रुटि दर X%% से अधिक होने पर exit 1
+  --alert-rps             float     किसी चरण में req/s X से कम होने पर exit 1
 ```
 
 ### Udaharan

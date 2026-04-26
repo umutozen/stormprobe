@@ -60,26 +60,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Al-istikhdam
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <رابط-الهدف>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       الحد الأقصى للتزامن في مرحلة الصعود (الافتراضي 50)
+  --concurrency-sustained int       التزامن في المرحلة المستدامة (الافتراضي 75)
+  --concurrency-spike     int       الحد الأقصى للتزامن في مرحلة الذروة (الافتراضي 250)
+  --req-per-worker        int       الطلبات لكل عامل لكل خطوة (الافتراضي 15)
+  --timeout               duration  مهلة انتظار كل طلب (الافتراضي 10s)
+  --endpoints             string    ملف قائمة نقاط النهاية (مسار واحد لكل سطر)
+  --no-discovery                    تجاوز katana+httpx، اختبار المسار الجذري فقط
+  --output                string    دليل إخراج التقارير (الافتراضي ./outputs)
+  --format                string    تنسيق التقارير: json أو html أو both (الافتراضي both)
+  --katana-path           string    مسار ثنائي katana مخصص
+  --httpx-path            string    مسار ثنائي httpx مخصص
+  --insecure                        تخطي التحقق من شهادة TLS
+  --header, -H            string    رأس HTTP مخصص (قابل للتكرار): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  مدة كل مرحلة (مثل 30s أو 1m). يتجاوز req-per-worker
+  --alert-p99             float     exit 1 إذا تجاوز P99 قيمة Xms
+  --alert-error-rate      float     exit 1 إذا تجاوزت نسبة الخطأ X%%
+  --alert-rps             float     exit 1 إذا انخفض req/s عن X
 ```
 
 ### Amthila

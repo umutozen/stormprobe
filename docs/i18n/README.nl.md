@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Gebruik
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <doel-url>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Maximale gelijktijdigheid voor Ramp-Up (standaard 50)
+  --concurrency-sustained int       Gelijktijdigheid voor Sustained-fase (standaard 75)
+  --concurrency-spike     int       Maximale gelijktijdigheid voor Spike (standaard 250)
+  --req-per-worker        int       Verzoeken per worker per stap (standaard 15)
+  --timeout               duration  Time-out per verzoek (standaard 10s)
+  --endpoints             string    Endpointlijstbestand (één pad per regel)
+  --no-discovery                    Katana+httpx overslaan, alleen rootpad testen
+  --output                string    Uitvoermap voor rapporten (standaard ./outputs)
+  --format                string    Rapportindeling: json, html, both (standaard both)
+  --katana-path           string    Aangepast katana-binair pad
+  --httpx-path            string    Aangepast httpx-binair pad
+  --insecure                        TLS-certificaatverificatie overslaan
+  --header, -H            string    Aangepaste HTTP-header (herhaalbaar): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  Duur per fase (bijv. 30s, 1m). Vervangt req-per-worker
+  --alert-p99             float     Exit 1 als P99-latentie Xms overschrijdt
+  --alert-error-rate      float     Exit 1 als foutpercentage X%% overschrijdt
+  --alert-rps             float     Exit 1 als req/s onder X valt
 ```
 
 ### Voorbeelden

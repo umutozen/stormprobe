@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Sayong beob
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <대상-URL>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Ramp-Up 최대 동시 연결 수 (기본값 50)
+  --concurrency-sustained int       Sustained 단계 동시 연결 수 (기본값 75)
+  --concurrency-spike     int       Spike 최대 동시 연결 수 (기본값 250)
+  --req-per-worker        int       단계당 워커당 요청 수 (기본값 15)
+  --timeout               duration  요청당 타임아웃 (기본값 10s)
+  --endpoints             string    엔드포인트 목록 파일 (줄당 경로 하나)
+  --no-discovery                    katana+httpx 건너뛰기, 루트 경로만 테스트
+  --output                string    보고서 출력 디렉토리 (기본값 ./outputs)
+  --format                string    보고서 형식: json, html, both (기본값 both)
+  --katana-path           string    사용자 정의 katana 바이너리 경로
+  --httpx-path            string    사용자 정의 httpx 바이너리 경로
+  --insecure                        TLS 인증서 검증 건너뛰기
+  --header, -H            string    사용자 정의 HTTP 헤더 (반복 가능): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  단계별 지속 시간 (예: 30s, 1m). req-per-worker 대신 사용
+  --alert-p99             float     P99 지연이 Xms 초과 시 exit 1
+  --alert-error-rate      float     오류율이 X%% 초과 시 exit 1
+  --alert-rps             float     req/s가 X 미만 시 exit 1
 ```
 
 ### Yesi

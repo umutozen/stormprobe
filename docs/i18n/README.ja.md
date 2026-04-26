@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Shiyoo-hoo
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <ターゲットURL>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       ランプアップ最大同時接続数（デフォルト 50）
+  --concurrency-sustained int       持続フェーズの同時接続数（デフォルト 75）
+  --concurrency-spike     int       スパイク最大同時接続数（デフォルト 250）
+  --req-per-worker        int       ワーカーごとのステップあたりリクエスト数（デフォルト 15）
+  --timeout               duration  リクエストごとのタイムアウト（デフォルト 10s）
+  --endpoints             string    エンドポイントリストファイル（1行1パス）
+  --no-discovery                    katana+httpxをスキップ、ルートパスのみテスト
+  --output                string    レポート出力ディレクトリ（デフォルト ./outputs）
+  --format                string    レポート形式：json、html、both（デフォルト both）
+  --katana-path           string    カスタム katana バイナリパス
+  --httpx-path            string    カスタム httpx バイナリパス
+  --insecure                        TLS証明書検証をスキップ
+  --header, -H            string    カスタム HTTP ヘッダー（繰り返し可）：-H 'Authorization: Bearer TOKEN'
+  --duration              duration  フェーズごとの継続時間（例：30s、1m）。req-per-workerより優先
+  --alert-p99             float     P99遅延がXmsを超えた場合 exit 1
+  --alert-error-rate      float     エラー率がX%%を超えた場合 exit 1
+  --alert-rps             float     req/sがXを下回った場合 exit 1
 ```
 
 ### Rei

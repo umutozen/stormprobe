@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Shi yong fang fa
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <目标URL>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       爬升阶段最大并发数（默认 50）
+  --concurrency-sustained int       持续阶段并发数（默认 75）
+  --concurrency-spike     int       峰值阶段最大并发数（默认 250）
+  --req-per-worker        int       每个 Worker 每步请求数（默认 15）
+  --timeout               duration  每请求超时时间（默认 10s）
+  --endpoints             string    端点列表文件（每行一个路径，跳过探测）
+  --no-discovery                    跳过 katana+httpx，仅测试根路径
+  --output                string    报告输出目录（默认 ./outputs）
+  --format                string    报告格式：json、html、both（默认 both）
+  --katana-path           string    自定义 katana 可执行文件路径
+  --httpx-path            string    自定义 httpx 可执行文件路径
+  --insecure                        跳过 TLS 证书验证
+  --header, -H            string    自定义 HTTP 头部（可重复）：-H 'Authorization: Bearer TOKEN'
+  --duration              duration  每阶段持续时间（如 30s、1m），优先于 req-per-worker
+  --alert-p99             float     任意阶段 P99 延迟超过 Xms 时退出码为 1
+  --alert-error-rate      float     任意阶段错误率超过 X%% 时退出码为 1
+  --alert-rps             float     任意阶段 req/s 低于 X 时退出码为 1
 ```
 
 ### Shi li

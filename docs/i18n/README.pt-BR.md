@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Uso
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <url-alvo>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Concorrência máxima para Ramp-Up (padrão 50)
+  --concurrency-sustained int       Concorrência para fase Sustained (padrão 75)
+  --concurrency-spike     int       Concorrência máxima para Spike (padrão 250)
+  --req-per-worker        int       Requisições por worker por etapa (padrão 15)
+  --timeout               duration  Timeout por requisição (padrão 10s)
+  --endpoints             string    Arquivo de lista de endpoints (um caminho por linha)
+  --no-discovery                    Ignorar katana+httpx, testar apenas caminho raiz
+  --output                string    Diretório de saída para relatórios (padrão ./outputs)
+  --format                string    Formato do relatório: json, html, both (padrão both)
+  --katana-path           string    Caminho binário katana personalizado
+  --httpx-path            string    Caminho binário httpx personalizado
+  --insecure                        Ignorar verificação de certificado TLS
+  --header, -H            string    Cabeçalho HTTP personalizado (repetível): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  Duração por fase (ex. 30s, 1m). Substitui req-per-worker
+  --alert-p99             float     Exit 1 se latência P99 exceder Xms
+  --alert-error-rate      float     Exit 1 se taxa de erro exceder X%%
+  --alert-rps             float     Exit 1 se req/s cair abaixo de X
 ```
 
 ### Exemplos

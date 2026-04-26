@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Uzycie
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <docelowy-url>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Maksymalna współbieżność dla Ramp-Up (domyślnie 50)
+  --concurrency-sustained int       Współbieżność dla fazy Sustained (domyślnie 75)
+  --concurrency-spike     int       Maksymalna współbieżność dla Spike (domyślnie 250)
+  --req-per-worker        int       Żądania na pracownika na krok (domyślnie 15)
+  --timeout               duration  Limit czasu żądania (domyślnie 10s)
+  --endpoints             string    Plik listy endpointów (jedna ścieżka na linię)
+  --no-discovery                    Pomiń katana+httpx, testuj tylko ścieżkę główną
+  --output                string    Katalog wyjściowy dla raportów (domyślnie ./outputs)
+  --format                string    Format raportu: json, html, both (domyślnie both)
+  --katana-path           string    Niestandardowa ścieżka binaryjna katana
+  --httpx-path            string    Niestandardowa ścieżka binaryjna httpx
+  --insecure                        Pomiń weryfikację certyfikatu TLS
+  --header, -H            string    Niestandardowy nagłówek HTTP (powtarzalny): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  Czas trwania fazy (np. 30s, 1m). Nadpisuje req-per-worker
+  --alert-p99             float     Exit 1 jeśli latencja P99 przekroczy Xms
+  --alert-error-rate      float     Exit 1 jeśli wskaźnik błędów przekroczy X%%
+  --alert-rps             float     Exit 1 jeśli req/s spadnie poniżej X
 ```
 
 ### Przyklady

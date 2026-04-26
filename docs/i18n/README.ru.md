@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Ispol'zovanije
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <целевой-url>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Максимальный параллелизм для Ramp-Up (по умолчанию 50)
+  --concurrency-sustained int       Параллелизм для фазы Sustained (по умолчанию 75)
+  --concurrency-spike     int       Максимальный параллелизм для Spike (по умолчанию 250)
+  --req-per-worker        int       Запросов на воркер за шаг (по умолчанию 15)
+  --timeout               duration  Таймаут запроса (по умолчанию 10s)
+  --endpoints             string    Файл списка конечных точек (один путь на строку)
+  --no-discovery                    Пропустить katana+httpx, тестировать только корень
+  --output                string    Каталог вывода для отчётов (по умолчанию ./outputs)
+  --format                string    Формат отчёта: json, html, both (по умолчанию both)
+  --katana-path           string    Путь к бинарному файлу katana
+  --httpx-path            string    Путь к бинарному файлу httpx
+  --insecure                        Пропустить проверку TLS-сертификата
+  --header, -H            string    Пользовательский HTTP-заголовок (многократно): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  Длительность фазы (напр. 30s, 1m). Заменяет req-per-worker
+  --alert-p99             float     Exit 1 если P99 задержка превышает Xms
+  --alert-error-rate      float     Exit 1 если уровень ошибок превышает X%%
+  --alert-rps             float     Exit 1 если req/s ниже X
 ```
 
 ### Primery

@@ -59,26 +59,26 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization:
 ## Verwendung
 
 ```
-stormprobe [flags] <target-url>
+stormprobe [flags] <ziel-url>
 
 Flags:
-  --concurrency-ramp      int       Peak concurrency for ramp-up (default 50)
-  --concurrency-sustained int       Concurrency for sustained phase (default 75)
-  --concurrency-spike     int       Peak concurrency for spike (default 250)
-  --req-per-worker        int       Requests per worker per step (default 15)
-  --timeout               duration  Per-request timeout (default 10s)
-  --endpoints             string    Endpoints file (one path per line, skips discovery)
-  --no-discovery                    Skip katana+httpx, test root path only
-  --output                string    Output directory for reports (default ./outputs)
-  --format                string    Report format: json, html, both (default both)
-  --katana-path           string    Custom katana binary path
-  --httpx-path            string    Custom httpx binary path
-  --insecure                        Skip TLS certificate verification
-  --header, -H            string    Custom HTTP header (repeatable): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Per-phase duration (e.g. 30s, 1m). Overrides req-per-worker when set
-  --alert-p99             float     Fail (exit 1) if P99 latency exceeds Xms in any phase
-  --alert-error-rate      float     Fail (exit 1) if error rate exceeds X%% in any phase
-  --alert-rps             float     Fail (exit 1) if req/s falls below X in any phase
+  --concurrency-ramp      int       Maximale Parallelität für Ramp-Up (Standard 50)
+  --concurrency-sustained int       Parallelität für Sustained-Phase (Standard 75)
+  --concurrency-spike     int       Maximale Parallelität für Spike (Standard 250)
+  --req-per-worker        int       Anfragen pro Worker pro Schritt (Standard 15)
+  --timeout               duration  Timeout pro Anfrage (Standard 10s)
+  --endpoints             string    Endpunktlistendatei (ein Pfad pro Zeile, überspringt Discovery)
+  --no-discovery                    Katana+httpx überspringen, nur Root-Pfad testen
+  --output                string    Ausgabeverzeichnis für Berichte (Standard ./outputs)
+  --format                string    Berichtsformat: json, html, both (Standard both)
+  --katana-path           string    Benutzerdefinierter Katana-Binärpfad
+  --httpx-path            string    Benutzerdefinierter httpx-Binärpfad
+  --insecure                        TLS-Zertifikatsprüfung überspringen
+  --header, -H            string    Benutzerdefinierter HTTP-Header (wiederholbar): -H 'Authorization: Bearer TOKEN'
+  --duration              duration  Dauer pro Phase (z.B. 30s, 1m). Überschreibt req-per-worker
+  --alert-p99             float     Exit 1 wenn P99-Latenz Xms überschreitet
+  --alert-error-rate      float     Exit 1 wenn Fehlerrate X%% überschreitet
+  --alert-rps             float     Exit 1 wenn req/s unter X fällt
 ```
 
 ### Beispiele
