@@ -25,6 +25,31 @@ var validFormats = map[string]bool{
 	"both": true,
 }
 
+// headerFlag allows --header to be specified multiple times.
+type headerFlag []string
+
+func (h *headerFlag) String() string  { return strings.Join(*h, ", ") }
+func (h *headerFlag) Set(v string) error {
+	if !strings.Contains(v, ":") {
+		return fmt.Errorf("header must be in 'Key: Value' format, got: %q", v)
+	}
+	*h = append(*h, v)
+	return nil
+}
+
+func parseHeaders(raw headerFlag) map[string]string {
+	out := make(map[string]string, len(raw))
+	for _, h := range raw {
+		parts := strings.SplitN(h, ":", 2)
+		key := strings.TrimSpace(parts[0])
+		val := strings.TrimSpace(parts[1])
+		if key != "" {
+			out[key] = val
+		}
+	}
+	return out
+}
+
 func main() {
 	concRamp := flag.Int("concurrency-ramp", 50, "Peak concurrency for ramp-up phase")
 	concSustained := flag.Int("concurrency-sustained", 75, "Concurrency for sustained phase")
@@ -38,6 +63,9 @@ func main() {
 	katanaPath := flag.String("katana-path", "", "Custom katana binary path")
 	httpxPath := flag.String("httpx-path", "", "Custom httpx binary path")
 	insecure := flag.Bool("insecure", false, "Skip TLS certificate verification")
+	var headers headerFlag
+	flag.Var(&headers, "header", "Custom HTTP header (repeatable): -header 'Authorization: Bearer TOKEN'")
+	flag.Var(&headers, "H", "Alias for --header")
 	flag.Parse()
 
 	if !validFormats[*format] {
@@ -91,6 +119,7 @@ func main() {
 		SustainedConc:  *concSustained,
 		SpikePeak:      *concSpike,
 		ReqPerWorker:   *reqPerWorker,
+		Headers:        parseHeaders(headers),
 	}
 
 	tlsConfig := &tls.Config{}
@@ -159,7 +188,7 @@ func main() {
 		if i > 0 {
 			time.Sleep(time.Duration(rand.Intn(500)+500) * time.Millisecond)
 		}
-		r := runner.RunPhase(step, targetURL, client, endpoints)
+		r := runner.RunPhase(step, targetURL, client, endpoints, cfg.Headers)
 		results = append(results, r)
 		tableRow(r)
 		time.Sleep(2 * time.Second)
@@ -169,7 +198,7 @@ func main() {
 	phaseHeader("PHASE 2: SUSTAINED")
 	tableHeader()
 	for _, step := range cfg.SustainedSteps() {
-		r := runner.RunPhase(step, targetURL, client, endpoints)
+		r := runner.RunPhase(step, targetURL, client, endpoints, cfg.Headers)
 		results = append(results, r)
 		tableRow(r)
 		time.Sleep(2 * time.Second)
@@ -179,7 +208,7 @@ func main() {
 	phaseHeader("PHASE 3: SPIKE")
 	tableHeader()
 	for _, step := range cfg.SpikeSteps() {
-		r := runner.RunPhase(step, targetURL, client, endpoints)
+		r := runner.RunPhase(step, targetURL, client, endpoints, cfg.Headers)
 		results = append(results, r)
 		tableRow(r)
 		time.Sleep(3 * time.Second)
@@ -190,7 +219,7 @@ func main() {
 	fmt.Println("[*] Waiting 10 seconds post-spike...")
 	time.Sleep(10 * time.Second)
 	tableHeader()
-	r := runner.RunPhase(cfg.RecoveryStep(), targetURL, client, endpoints)
+	r := runner.RunPhase(cfg.RecoveryStep(), targetURL, client, endpoints, cfg.Headers)
 	results = append(results, r)
 	tableRow(r)
 	tableFooter()

@@ -10,7 +10,7 @@ import (
 	"github.com/umutozen/stormprobe/internal/metrics"
 )
 
-func RunPhase(step config.PhaseStep, targetURL string, client *http.Client, endpoints []string) config.PhaseResult {
+func RunPhase(step config.PhaseStep, targetURL string, client *http.Client, endpoints []string, headers map[string]string) config.PhaseResult {
 	total := step.Concurrency * step.ReqPerWorker
 	var successful, failed int32
 	var timeouts, resets, refused, http5xx, http4xx, other int32
@@ -30,7 +30,7 @@ func RunPhase(step config.PhaseStep, targetURL string, client *http.Client, endp
 			defer wg.Done()
 			executeWorker(id, jobs, client, targetURL, endpoints,
 				&successful, &failed, &timeouts, &resets, &refused, &http5xx, &http4xx, &other,
-				&latencies, latencyMu, statusDist, statusMu)
+				&latencies, latencyMu, statusDist, statusMu, headers)
 		}(w)
 	}
 

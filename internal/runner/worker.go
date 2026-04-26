@@ -15,7 +15,8 @@ import (
 
 func executeWorker(workerID int, jobs <-chan int, client *http.Client, targetURL string, endpoints []string,
 	successful, failed, timeouts, resets, refused, http5xx, http4xx, other *int32,
-	latencies *[]float64, latencyMu *lockable, statusDist map[int]int, statusMu *lockable) {
+	latencies *[]float64, latencyMu *lockable, statusDist map[int]int, statusMu *lockable,
+	customHeaders map[string]string) {
 
 	rng := rand.New(rand.NewSource(time.Now().UnixNano() + int64(workerID)))
 	time.Sleep(time.Duration(workerID*8) * time.Millisecond)
@@ -46,6 +47,9 @@ func executeWorker(workerID int, jobs <-chan int, client *http.Client, targetURL
 		req.Header.Set("User-Agent", config.UserAgents[rng.Intn(len(config.UserAgents))])
 		req.Header.Set("Accept", "text/html,*/*;q=0.8")
 		req.Header.Set("Accept-Language", "en-US,en;q=0.9")
+		for k, v := range customHeaders {
+			req.Header.Set(k, v)
+		}
 
 		resp, doErr := client.Do(req)
 		elapsedMs = float64(time.Since(reqStart).Milliseconds())

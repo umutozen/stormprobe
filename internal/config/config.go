@@ -52,6 +52,7 @@ type Config struct {
 	SustainedConc  int
 	SpikePeak      int
 	ReqPerWorker   int
+	Headers        map[string]string
 }
 
 var UserAgents = []string{
