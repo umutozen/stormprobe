@@ -1,5 +1,5 @@
-stormprobe
-stormprobe.exe
+/stormprobe
+/stormprobe.exe
 *.test
 *.out
 
@@ -19,3 +19,5 @@ Thumbs.db
 
 ebelediye_*
 go_load_tester*
+
+GEMINI.md
