@@ -1,188 +1,214 @@
 [English](../../README.md) · [Türkçe](README.tr.md) · [Deutsch](README.de.md) · [Francais](README.fr.md) · [Espanol](README.es.md) · [Italiano](README.it.md) · [Portugues](README.pt-BR.md) · [Russkij](README.ru.md) · [Zhongwen Jian](README.zh-CN.md) · [Zhongwen Fan](README.zh-TW.md) · [Nihongo](README.ja.md) · [Hangugeo](README.ko.md) · [Al-Arabiyya](README.ar.md) · [Hindi](README.hi.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Ukrainska](README.uk.md)
 
-# StormProbe
-
 <p align="center">
-  <img src="../../assets/banner.png" alt="StormProbe" width="100%">
+  <img src="../../assets/banner.png" alt="StormProbe Banner" width="100%">
 </p>
 
-**odkryj. obciaz. analizuj.**
+<h1 align="center">StormProbe</h1>
 
-Produkcyjne narzedzie do testow obciazeniowych HTTP z autonomicznym wykrywaniem endpoint (punktow koncowych). Zero zaleznosci.
+<p align="center">
+  <strong>odkryc · zaladowac · przeanalizowac</strong><br>
+  Narzedzie do testowania obciazenia HTTP na poziomie produkcyjnym z autonomicznym wykrywaniem punktow koncowych. Zero zewnetrznych zaleznosci.
+</p>
 
-[![CI](https://github.com/umutozen/stormprobe/actions/workflows/ci.yml/badge.svg)](https://github.com/umutozen/stormprobe/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/umutozen/stormprobe)](https://goreportcard.com/report/github.com/umutozen/stormprobe)
+<p align="center">
+  <a href="https://github.com/umutozen/stormprobe/actions/workflows/ci.yml">
+    <img src="https://github.com/umutozen/stormprobe/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+  <a href="https://goreportcard.com/report/github.com/umutozen/stormprobe">
+    <img src="https://goreportcard.com/badge/github.com/umutozen/stormprobe" alt="Go Report Card">
+  </a>
+  <a href="https://github.com/umutozen/stormprobe/releases">
+    <img src="https://img.shields.io/github/v/release/umutozen/stormprobe" alt="Najnowsza wersja">
+  </a>
+  <a href="../../LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Licencja MIT">
+  </a>
+</p>
+
+---
+
+## Czym jest StormProbe?
+
+StormProbe to **narzedzie do testowania obciazenia HTTP bez zaleznosci** napisane w czystym Go. Automatycznie wykrywa punkty koncowe aplikacji za pomoca [Katana](https://github.com/projectdiscovery/katana) i [Httpx](https://github.com/projectdiscovery/httpx), nastepnie przeprowadza strukturyzowany 4-fazowy test obciazenia — **Ramp-Up → Sustained → Spike → Recovery** — i produkuje raporty JSON i HTML z metrykami opoznien P50/P95/P99.
+
+Zaprojektowane dla:
+- **Potoków CI/CD** — progi alertów z kodami wyjscia
+- **Pentesterów** — automatyczne wykrywanie aktywnych punktów koncowych
+- **Inzynierow DevOps** — benchmarki przed i po wdrozeniu
+- **Zespolow QA** — walidacja SLA wydajnosci
 
 ---
 
 ## Funkcje
 
-- **Automatyczne wykrywanie** -- Skanowanie Katana + sonda Httpx automatycznie znajduje aktywne endpoint'y
-- **Testy wielofazowe** -- Ramp-Up (stopniowy wzrost), Sustained (ciagle), Spike (szczyt obciazenia), Recovery (odzyskiwanie)
-- **Szczegolowe metryki** -- P50 / P95 / P99 latency (opoznienie), req/s, klasyfikacja bledow
-- **Podwojny raport** -- JSON (odczytywalny maszynowo) + HTML (wizualny dashboard w ciemnym motywie)
-- **Zero zaleznosci** -- Czysta standardowa biblioteka Go, bez modulow zewnetrznych
-- **Gotowy na Docker** -- Pojedyncze polecenie z wbudowanym Katana + Httpx
-- **Wieloplatformowy** -- Pliki binarne Linux, macOS, Windows przez GoReleaser
+| Funkcja | Szczegoly |
+|---|---|
+| **Automatyczne wykrywanie** | Indeksowanie Katana + sonda Httpx, deduplikowana lista |
+| **4-fazowy test obciazenia** | Ramp-Up → Sustained → Spike → Recovery |
+| **Bogate metryki** | Opoznienie P50/P95/P99, req/s, klasyfikacja bledów na faze |
+| **Tryb czasu trwania** | Fazy oparte na czasie (`--duration 30s`) zamiast liczby zapytan |
+| **Progi alertów** | `exit 1` kompatybilny z CI/CD przy naruszeniu P99, wskaznika bledów lub RPS |
+| **Podwójne raporty** | JSON (czytalny maszynowo) + autonomiczny ciemny pulpit HTML |
+| **Niestandardowe naglówki** | Tokeny Bearer, naglówki dzierzawcy, cookies — propagowane wszedie |
+| **Gotowy na Docker** | Pojedynczy obraz z wbudowanym Katana + Httpx |
+| **Wieloplatformowy** | Linux, macOS, Windows — amd64 & arm64 |
+| **Zero zaleznosci** | Czysty Go 1.21+ stdlib, `go install` wystarczy |
+
+---
+
+## Szybki start
+
+```bash
+# Instalacja (wymagane Go 1.21+)
+go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
+
+# Podstawowy test — automatyczne wykrywanie, 4 fazy
+stormprobe https://example.com
+
+# Pominiecie wykrywania, testowanie tylko sciezki glównej
+stormprobe --no-discovery https://example.com
+
+# TLS + naglówek auth + tylko raport JSON
+stormprobe --insecure -H "Authorization: Bearer TOKEN" --format json https://api.example.com
+
+# Test oparty na czasie trwania: 30 sekund na faze
+stormprobe --insecure --duration 30s --no-discovery https://example.com
+
+# CI/CD: exit 1 jesli P99 > 500ms lub bledy > 5%
+stormprobe --alert-p99 500 --alert-error-rate 5 https://example.com
+```
+
+---
 
 ## Instalacja
 
-### Pobierz plik binarny *(bez Go)*
-Pobierz najnowszą wersję dla swojej platformy ze [strony Releases](https://github.com/umutozen/stormprobe/releases), wypakuj archiwum i przenieś plik binarny do katalogu w PATH:
+### Opcja 1 — `go install` *(zalecane)*
+
+```bash
+go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
+stormprobe --help
+```
+
+### Opcja 2 — Gotowy plik binarny *(bez Go)*
+
+Pobrac ze strony [Releases](https://github.com/umutozen/stormprobe/releases).
 
 ```bash
 # Linux / macOS
 chmod +x stormprobe
 sudo mv stormprobe /usr/local/bin/
-stormprobe --no-discovery https://example.com
 
-# Windows (PowerShell)
+# Windows PowerShell
 Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
-stormprobe --no-discovery https://example.com
 ```
 
-### go install *(wymaga Go 1.21+, najprostsza metoda)*
-```bash
-go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
-stormprobe --no-discovery https://example.com
-```
+### Opcja 3 — Kompilacja ze zrodel
 
-### Budowanie ze źródeł *(wymaga Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe
-go build -o stormprobe ./cmd/stormprobe   # Linux / macOS
-go build -o stormprobe.exe ./cmd/stormprobe   # Windows
+go build -o stormprobe ./cmd/stormprobe      # Linux / macOS
+go build -o stormprobe.exe ./cmd/stormprobe  # Windows
 ```
 
-### Docker
+### Opcja 4 — Docker
 
 ```bash
-# Szybki test, brak zapisanego raportu
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
 
-# Pełny test z zapisaniem raportów do ./outputs (Linux / macOS)
-docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
+# Linux / macOS
+docker run --rm -v $(pwd)/outputs:/app/outputs \
+  ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 
-# Pełny test z zapisaniem raportów do ./outputs (Windows PowerShell)
-docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
-
-# Test przeciążeniowy (500 równoczesnych użytkowników)
-docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --concurrency-spike 500 https://example.com
-
-# Pomiń wykrywanie, testuj tylko ścieżkę główną
-docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery https://example.com
-
-# Niestandardowe nagłówki HTTP (autoryzacja, niestandardowy tenant itp.)
-docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
+# Windows PowerShell
+docker run --rm -v "${PWD}\outputs:/app/outputs" `
+  ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 ```
 
-## Uzycie
-
-```
-stormprobe [flags] <docelowy-url>
-
-Flags:
-  --concurrency-ramp      int       Maksymalna współbieżność dla Ramp-Up (domyślnie 50)
-  --concurrency-sustained int       Współbieżność dla fazy Sustained (domyślnie 75)
-  --concurrency-spike     int       Maksymalna współbieżność dla Spike (domyślnie 250)
-  --req-per-worker        int       Żądania na pracownika na krok (domyślnie 15)
-  --timeout               duration  Limit czasu żądania (domyślnie 10s)
-  --endpoints             string    Plik listy endpointów (jedna ścieżka na linię)
-  --no-discovery                    Pomiń katana+httpx, testuj tylko ścieżkę główną
-  --output                string    Katalog wyjściowy dla raportów (domyślnie ./outputs)
-  --format                string    Format raportu: json, html, both (domyślnie both)
-  --katana-path           string    Niestandardowa ścieżka binaryjna katana
-  --httpx-path            string    Niestandardowa ścieżka binaryjna httpx
-  --insecure                        Pomiń weryfikację certyfikatu TLS
-  --header, -H            string    Niestandardowy nagłówek HTTP (powtarzalny): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Czas trwania fazy (np. 30s, 1m). Nadpisuje req-per-worker
-  --alert-p99             float     Exit 1 jeśli latencja P99 przekroczy Xms
-  --alert-error-rate      float     Exit 1 jeśli wskaźnik błędów przekroczy X%%
-  --alert-rps             float     Exit 1 jeśli req/s spadnie poniżej X
-```
-
-### Przyklady
-
-```bash
-stormprobe --insecure --concurrency-spike 500 --req-per-worker 20 https://example.com
-
-stormprobe --insecure --endpoints endpoints.txt https://example.com
-
-stormprobe --insecure --format json --output ./results https://example.com
-
-stormprobe --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
-
-stormprobe --insecure --duration 30s --no-discovery https://example.com
-
-stormprobe --insecure --duration 1m --concurrency-spike 300 https://example.com
-
-stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
-```
-
-## Fazy testow
-
-| Faza | Opis |
-|---|---|
-| **0 -- Discovery** | Skanowanie Katana + sonda Httpx, lista endpoint'ow po deduplikacji |
-| **1 -- Ramp-Up** | Stopniowy wzrost: 5, 15, 30, 50 virtual users (uzytkownicy wirtualni) |
-| **2 -- Sustained** | 3 fale przy docelowej concurrency (wspolbieznosci), mierzy degradacje |
-| **3 -- Spike** | Nagle wyrzut do szczytu, nastepnie chlodzenie |
-| **4 -- Recovery** | Kontrola zdrowia po spike po 10s chlodzenia |
-
-## Wynik
-
-| Plik | Opis |
-|---|---|
-| `stormprobe_report_<timestamp>.json` | Wyniki odczytywalne maszynowo ze wszystkimi metrykami |
-| `stormprobe_report_<timestamp>.html` | Wizualny dashboard, otworz w dowolnej przegladarce |
-
-## Struktura projektu
-
-```
-stormprobe/
-    cmd/main.go                    Punkt wejscia CLI
-    internal/
-        config/config.go           Typy wspoldzielone, generatory faz, alert config
-        alert/
-            alert.go               Threshold checks, CI/CD exit code logic
-        metrics/
-            latency.go             Obliczanie percentyli
-            errors.go              Klasyfikacja bledow
-        discovery/
-            discovery.go           Interfejs publiczny Discover()
-            katana.go              Integracja crawlera Katana
-            httpx.go               Integracja sondy Httpx
-        runner/
-            phase.go               Orkiestracja faz
-            worker.go              Pula goroutine, RNG na worker
-        report/
-            json.go                Generator raportow JSON
-            html.go                Samodzielny raport HTML
-    Dockerfile                     Wieloetapowy z Katana + Httpx
-    .goreleaser.yml                Konfiguracja kompilacji krzyzowej
-    Makefile                       Cele build, test, lint
-    config.example.yml             Referencja domyslnych wartosci faz
-```
-
-## Wymagania
-
-- Go 1.21+
-- [Katana](https://github.com/projectdiscovery/katana) (ProjectDiscovery) -- opcjonalnie, do automatycznego wykrywania
-- [Httpx](https://github.com/projectdiscovery/httpx) (ProjectDiscovery) -- opcjonalnie, do walidacji endpoint'ow
+### Opcjonalnie — Narzedzia wykrywania
 
 ```bash
 bash scripts/install-tools.sh
 ```
 
+> Bez Katana/Httpx uzywac `--no-discovery` lub `--endpoints`.
+
+---
+
+## Dokumentacja CLI
+
+### Wspólbieznosc i obciazenie
+
+| Flaga | Domyslnie | Opis |
+|---|---|---|
+| `--concurrency-ramp` | `50` | Maksymalna wspólbieznosc dla fazy Ramp-Up |
+| `--concurrency-sustained` | `75` | Wspólbieznosc dla fazy Sustained |
+| `--concurrency-spike` | `250` | Maksymalna wspólbieznosc dla fazy Spike |
+| `--req-per-worker` | `15` | Zapytania na pracownika (ignorowane jesli `--duration` jest ustawione) |
+| `--duration` | `0` (wylaczone) | Czas trwania fazy, np. `30s`, `1m` |
+| `--timeout` | `10s` | Limit czasu na zapytanie |
+
+### Wykrywanie
+
+| Flaga | Domyslnie | Opis |
+|---|---|---|
+| `--no-discovery` | `false` | Pominiecie Katana+Httpx, testowanie tylko korzenia |
+| `--endpoints` | `""` | Ladowanie punktów koncowych z pliku |
+| `--katana-path` | `""` | Niestandardowa sciezka do pliku binarnego Katana |
+| `--httpx-path` | `""` | Niestandardowa sciezka do pliku binarnego Httpx |
+
+### HTTP i bezpieczenstwo
+
+| Flaga | Domyslnie | Opis |
+|---|---|---|
+| `-H`, `--header` | — | Niestandardowy naglówek (powtarzalny) |
+| `--insecure` | `false` | Pominiecie weryfikacji certyfikatu TLS |
+
+### Wyjscie
+
+| Flaga | Domyslnie | Opis |
+|---|---|---|
+| `--format` | `both` | Format raportu: `json`, `html`, `both` |
+| `--output` | `./outputs` | Katalog wyjsciowy dla raportów |
+
+### Alerty CI/CD
+
+| Flaga | Domyslnie | Opis |
+|---|---|---|
+| `--alert-p99` | `0` (wylaczone) | exit 1 jesli P99 (ms) przekroczy próg |
+| `--alert-error-rate` | `0` (wylaczone) | exit 1 jesli wskaznik bledów (%) przekroczy próg |
+| `--alert-rps` | `0` (wylaczone) | exit 1 jesli req/s spadnie ponizej progu |
+
+---
+
+## Fazy testów
+
+| Faza | Opis |
+|---|---|
+| **0 — Discovery** | Indeksowanie Katana + sonda Httpx, deduplikowana lista |
+| **1 — Ramp-Up** | Stopniowy wzrost wspólbieznosci: 5 → 15 → 30 → szczyt |
+| **2 — Sustained** | 3 fale przy docelowej wspólbieznosci |
+| **3 — Spike** | Nagly wzrost do szczytu, nastepnie schladzanie |
+| **4 — Recovery** | Kontrola stanu po 10s schladzania |
+
+---
+
+## Wyjscie i raporty
+
+| Plik | Opis |
+|---|---|
+| `stormprobe_report_<timestamp>.json` | Wszystkie metryki na faze, czytalny maszynowo |
+| `stormprobe_report_<timestamp>.html` | Autonomiczny ciemny pulpit z wykresem SVG opoznien |
+
+---
+
 ## Zastrzezenie
 
-To narzedzie jest przeznaczone wylacznie do **autoryzowanych testow bezpieczenstwa i oceny wydajnosci**. Przed uruchomieniem jakichkolwiek testow obciazeniowych nalezy uzyskac wyrazna pisemna zgode od wlasciciela systemu docelowego. Nieautoryzowane uzycie tego narzedzia przeciwko systemom, ktorych nie jestes wlascicielem lub na ktore nie masz pozwolenia na testowanie, moze naruszac przepisy lokalne, krajowe lub miedzynarodowe. Autorzy nie ponosz zadnej odpowiedzialnosci za niewlasciwe uzycie lub szkody spowodowane przez to narzedzie.
+Narzedzie to jest przeznaczone **wylacznie do autoryzowanych testów bezpieczenstwa i oceny wydajnosci**. Przed przeprowadzeniem testów obciazeniowych nalezy uzyskac wyrazna pisemna zgode wlasciciela systemu docelowego. Autorzy nie ponosza **zadnej odpowiedzialnosci** za niewlasciwe uzycie lub szkody spowodowane tym narzedziem.
+
+---
 
 ## Licencja
 
-MIT
-
-## Autor
-
-**Umut ÖZEN** — [@umutozen](https://github.com/umutozen)
+[MIT](../../LICENSE) © [Umut ÖZEN](https://github.com/umutozen)

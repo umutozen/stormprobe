@@ -1,197 +1,214 @@
 [English](../../README.md) · [Türkçe](README.tr.md) · [Deutsch](README.de.md) · [Francais](README.fr.md) · [Espanol](README.es.md) · [Italiano](README.it.md) · [Portugues](README.pt-BR.md) · [Russkij](README.ru.md) · [Zhongwen Jian](README.zh-CN.md) · [Zhongwen Fan](README.zh-TW.md) · [Nihongo](README.ja.md) · [Hangugeo](README.ko.md) · [Al-Arabiyya](README.ar.md) · [Hindi](README.hi.md) · [Nederlands](README.nl.md) · [Polski](README.pl.md) · [Ukrainska](README.uk.md)
 
-# StormProbe
-
 <p align="center">
-  <img src="../../assets/banner.png" alt="StormProbe" width="100%">
+  <img src="../../assets/banner.png" alt="StormProbe Banner" width="100%">
 </p>
 
-**obnaruzhit'. nagruzit'. proanalizirovat'.**
+<h1 align="center">StormProbe</h1>
 
-HTTP-instrument nagruzochnogo testirovanija proizvodstvennogo urovnja s avtonomnym obnaruzhenijem endpoint (konechnykh tochek). Nol' zavisimostej.
+<p align="center">
+  <strong>obnaruzhit · nagruzit · proanalizirovat</strong><br>
+  HTTP-instrument nagruzochnogo testirovaniya proizvodstvennogo urovnya s avtonomnym obnaruzheniem konechnyh tochek. Nulевые vneshnie zavisimosti.
+</p>
 
-[![CI](https://github.com/umutozen/stormprobe/actions/workflows/ci.yml/badge.svg)](https://github.com/umutozen/stormprobe/actions)
-[![Go Report Card](https://goreportcard.com/badge/github.com/umutozen/stormprobe)](https://goreportcard.com/report/github.com/umutozen/stormprobe)
+<p align="center">
+  <a href="https://github.com/umutozen/stormprobe/actions/workflows/ci.yml">
+    <img src="https://github.com/umutozen/stormprobe/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+  <a href="https://goreportcard.com/report/github.com/umutozen/stormprobe">
+    <img src="https://goreportcard.com/badge/github.com/umutozen/stormprobe" alt="Go Report Card">
+  </a>
+  <a href="https://github.com/umutozen/stormprobe/releases">
+    <img src="https://img.shields.io/github/v/release/umutozen/stormprobe" alt="Poslednyaya versiya">
+  </a>
+  <a href="../../LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Litsenziya MIT">
+  </a>
+</p>
+
+---
+
+## Chto takoe StormProbe?
+
+StormProbe — eto **instrument nagruzochnogo HTTP-testirovaniya bez zavisimostej**, napisannyj na chist om Go. On avtomaticheski obnaruzhivaet konechnye tochki vashego prilozheniya s pomoshh'yu [Katana](https://github.com/projectdiscovery/katana) i [Httpx](https://github.com/projectdiscovery/httpx), zatem vypolnyaet strukturirovannyj 4-fazovyj nagruzochnyj test — **Ramp-Up → Sustained → Spike → Recovery** — i sozdaet otchety JSON i HTML s metrikami zaderzhki P50/P95/P99.
+
+Razrabotan dlya:
+- **Konvejerov CI/CD** — porogi opoveshcheniya s kodami vyhoda
+- **Pentesterov** — avtomaticheskoe obnaruzhenie aktivnyh konechnyh tochek
+- **DevOps-inzhenerov** — benchmarki do i posle razvyortyvaniya
+- **Komand QA** — validaciya SLA proizvoditel'nosti
 
 ---
 
 ## Vozmozhnosti
 
-- **Avtomaticheskoje obnaruzhenije** -- Skanirovanije Katana + zond Httpx avtomaticheski nakhodit aktivnyje endpoint'y
-- **Mnogofaznoye testirovanije** -- Ramp-Up (postupnoye uvelichenije), Sustained (ustojchivoye), Spike (pik nagruzki), Recovery (vosstanovlenije)
-- **Podrobnyje metriki** -- P50 / P95 / P99 latency (zaderzhka), req/s, klassifikacija oshibok
-- **Dvojnoj otchot** -- JSON (mashinochitajemyj) + HTML (vizual'naja panel' s tomnoj temoj)
-- **Nol' zavisimostej** -- Chistaja standartnaja biblioteka Go, bez storonnih modulej
-- **Gotov dlja Docker** -- Odna komanda s vstroyennymi Katana + Httpx
-- **Krossplatformennyj** -- Binarnyje fajly dlja Linux, macOS, Windows cherez GoReleaser
+| Vozmozhnost' | Podrobnosti |
+|---|---|
+| **Avtomaticheskoe obnaruzhenie** | Krauling Katana + zond Httpx, deduplirovanny spisok |
+| **4-fazovyj nagruzochnyj test** | Ramp-Up → Sustained → Spike → Recovery |
+| **Bogatye metriki** | Zaderzhka P50/P95/P99, req/s, klassifikaciya oshibok po fazam |
+| **Rezhim dlitel'nosti** | Fazy na osnove vremeni (`--duration 30s`) vmesto kolichestva zaprosov |
+| **Porogi opoveshcheniya** | `exit 1` sovmestimy s CI/CD pri narushenii P99, chastoty oshibok ili RPS |
+| **Dvojnye otchety** | JSON (mashinochitaemy) + avtonomny temnaya panel' HTML |
+| **Pol'zovatel'skie zagolovki** | Bearer-tokeny, zagolovki arendatora, kuki — rasprostraneny povsyudu |
+| **Gotov k Docker** | Odino izobrazheniye s vstroennym Katana + Httpx |
+| **Krossplatformenny** | Linux, macOS, Windows — amd64 & arm64 |
+| **Nul evye zavisimosti** | Chisty Go 1.21+ stdlib, dostatochno `go install` |
 
-## Bystryj start
+---
+
+## Bystry start
 
 ```bash
-go run ./cmd https://example.com
+# Ustanovka (trebuetsya Go 1.21+)
+go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
 
-go build -o stormprobe ./cmd/stormprobe
-./stormprobe --insecure https://example.com
+# Bazovy test — avtomaticheskoe obnaruzhenie, 4 fazy
+stormprobe https://example.com
+
+# Propustit' obnaruzhenie, testirovat' tol'ko korenevoj put'
+stormprobe --no-discovery https://example.com
+
+# TLS + zagolovok auth + tol'ko otchet JSON
+stormprobe --insecure -H "Authorization: Bearer TOKEN" --format json https://api.example.com
+
+# Test na osnove dlitel'nosti: 30 sekund na fazu
+stormprobe --insecure --duration 30s --no-discovery https://example.com
+
+# CI/CD: exit 1 esli P99 > 500ms ili oshibki > 5%
+stormprobe --alert-p99 500 --alert-error-rate 5 https://example.com
 ```
 
-## Установка
+---
 
-### Скачать бинарный файл *(без Go)*
-Загрузите последнюю версию для вашей платформы со [страницы Releases](https://github.com/umutozen/stormprobe/releases), распакуйте архив и переместите бинарный файл в директорию из PATH:
+## Ustanovka
+
+### Variant 1 — `go install` *(rekomenduetsya)*
+
+```bash
+go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
+stormprobe --help
+```
+
+### Variant 2 — Gotovy binarny fajl *(bez Go)*
+
+Zagruzit' so stranitsy [Releases](https://github.com/umutozen/stormprobe/releases).
 
 ```bash
 # Linux / macOS
 chmod +x stormprobe
 sudo mv stormprobe /usr/local/bin/
-stormprobe --no-discovery https://example.com
 
-# Windows (PowerShell)
+# Windows PowerShell
 Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
-stormprobe --no-discovery https://example.com
 ```
 
-### go install *(требуется Go 1.21+, самый простой способ)*
-```bash
-go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
-stormprobe --no-discovery https://example.com
-```
+### Variant 3 — Sborka iz ishodnikov
 
-### Сборка из исходников *(требуется Go 1.21+)*
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe
-go build -o stormprobe ./cmd/stormprobe   # Linux / macOS
-go build -o stormprobe.exe ./cmd/stormprobe   # Windows
+go build -o stormprobe ./cmd/stormprobe      # Linux / macOS
+go build -o stormprobe.exe ./cmd/stormprobe  # Windows
 ```
 
-### Docker
+### Variant 4 — Docker
 
 ```bash
-# Быстрый тест, отчёт не сохраняется
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
 
-# Полный тест с сохранением отчётов в ./outputs (Linux / macOS)
-docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
+# Linux / macOS
+docker run --rm -v $(pwd)/outputs:/app/outputs \
+  ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 
-# Полный тест с сохранением отчётов в ./outputs (Windows PowerShell)
-docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
-
-# Нагрузочный тест (500 одновременных пользователей)
-docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --concurrency-spike 500 https://example.com
-
-# Пропустить обнаружение, тестировать только корневой путь
-docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery https://example.com
-
-# Пользовательские HTTP-заголовки (авторизация, tenant и т.д.)
-docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
+# Windows PowerShell
+docker run --rm -v "${PWD}\outputs:/app/outputs" `
+  ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 ```
 
-## Ispol'zovanije
-
-```
-stormprobe [flags] <целевой-url>
-
-Flags:
-  --concurrency-ramp      int       Максимальный параллелизм для Ramp-Up (по умолчанию 50)
-  --concurrency-sustained int       Параллелизм для фазы Sustained (по умолчанию 75)
-  --concurrency-spike     int       Максимальный параллелизм для Spike (по умолчанию 250)
-  --req-per-worker        int       Запросов на воркер за шаг (по умолчанию 15)
-  --timeout               duration  Таймаут запроса (по умолчанию 10s)
-  --endpoints             string    Файл списка конечных точек (один путь на строку)
-  --no-discovery                    Пропустить katana+httpx, тестировать только корень
-  --output                string    Каталог вывода для отчётов (по умолчанию ./outputs)
-  --format                string    Формат отчёта: json, html, both (по умолчанию both)
-  --katana-path           string    Путь к бинарному файлу katana
-  --httpx-path            string    Путь к бинарному файлу httpx
-  --insecure                        Пропустить проверку TLS-сертификата
-  --header, -H            string    Пользовательский HTTP-заголовок (многократно): -H 'Authorization: Bearer TOKEN'
-  --duration              duration  Длительность фазы (напр. 30s, 1m). Заменяет req-per-worker
-  --alert-p99             float     Exit 1 если P99 задержка превышает Xms
-  --alert-error-rate      float     Exit 1 если уровень ошибок превышает X%%
-  --alert-rps             float     Exit 1 если req/s ниже X
-```
-
-### Primery
-
-```bash
-stormprobe --insecure --concurrency-spike 500 --req-per-worker 20 https://example.com
-
-stormprobe --insecure --endpoints endpoints.txt https://example.com
-
-stormprobe --insecure --format json --output ./results https://example.com
-
-stormprobe --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
-
-stormprobe --insecure --duration 30s --no-discovery https://example.com
-
-stormprobe --insecure --duration 1m --concurrency-spike 300 https://example.com
-
-stormprobe --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
-```
-
-## Fazy testirovanija
-
-| Faza | Opisanije |
-|---|---|
-| **0 -- Discovery** | Skanirovanije Katana + zond Httpx, deduplicirovanyj spisok endpoint'ov |
-| **1 -- Ramp-Up** | Postupnoye uvelichenije: 5, 15, 30, 50 virtual users (virtual'nyje pol'zovateli) |
-| **2 -- Sustained** | 3 volny pri celevoj concurrency (odnovremennosti), izmerajet degradaciju |
-| **3 -- Spike** | Vnezapnyj vsplesk do pika, zatem okhlazhdenie |
-| **4 -- Recovery** | Proverka sostojanija posle spike cherez 10s okhlazhdenia |
-
-## Vykhod
-
-| Fajl | Opisanije |
-|---|---|
-| `stormprobe_report_<timestamp>.json` | Mashinochitajemyje rezul'taty so vsemi metrikami |
-| `stormprobe_report_<timestamp>.html` | Vizual'naja panel', otkrojte v ljubom brauzere |
-
-## Struktura proekta
-
-```
-stormprobe/
-    cmd/main.go                    Tochka vkhoda CLI
-    internal/
-        config/config.go           Obshchije tipy, generatory faz, alert config
-        alert/
-            alert.go               Threshold checks, CI/CD exit code logic
-        metrics/
-            latency.go             Vychislenije percentiley
-            errors.go              Klassifikacija oshibok
-        discovery/
-            discovery.go           Publichnyj interfejs Discover()
-            katana.go              Integracija kraulera Katana
-            httpx.go               Integracija zonda Httpx
-        runner/
-            phase.go               Orkestrovka faz
-            worker.go              Pul goroutin, RNG na worker
-        report/
-            json.go                Pisatel' otchota JSON
-            html.go                Avtonomnyj HTML-otchot
-    Dockerfile                     Mnogoetapnyj s Katana + Httpx
-    .goreleaser.yml                Konfiguracija kross-kompiljacii
-    Makefile                       Celi build, test, lint
-    config.example.yml             Spravka po umolchanijem faz
-```
-
-## Trebovanija
-
-- Go 1.21+
-- [Katana](https://github.com/projectdiscovery/katana) (ProjectDiscovery) -- neobazatel'no, dlja avtomaticheskogo obnaruzhenia
-- [Httpx](https://github.com/projectdiscovery/httpx) (ProjectDiscovery) -- neobazatel'no, dlja validacii endpoint'ov
+### Opcionalno — Instrumenty obnaruzheniya
 
 ```bash
 bash scripts/install-tools.sh
 ```
 
-## Otkazot otvetstvennosti
+> Bez Katana/Httpx ispol'zovat' `--no-discovery` ili `--endpoints`.
 
-Etot instrument prednaznachen iskljuchitel'no dlja **avtorizovannogo testirovanija bezopasnosti i ocenki proizvoditel'nosti**. Vy dolzhny poluchit' javnoje pis'mennoje razreshenije ot vladelca celevoj sistemy pered zapuskom ljubykh nagruzochnykh testov. Nesankcionirovannoye ispol'zovanije etogo instrumenta protiv sistem, kotoryje vam ne prinadlezhat ili na testirovanije kotorykh u vas net razreshenija, mozhet narushit' mestnyje, nacionalnyje ili mezhdunarodnyje zakony. Avtory ne nesut otvetstvennosti za nepravil'noye ispol'zovanije ili ushcherb, prichinjonnyj etim instrumentom.
+---
 
-## Licenzija
+## Spravka po CLI
 
-MIT
+### Parallelizm i nagruzka
 
-## Avtor
+| Flag | Po umolchaniyu | Opisanie |
+|---|---|---|
+| `--concurrency-ramp` | `50` | Maksimal'ny parallelizm dlya fazy Ramp-Up |
+| `--concurrency-sustained` | `75` | Parallelizm dlya fazy Sustained |
+| `--concurrency-spike` | `250` | Maksimal'ny parallelizm dlya fazy Spike |
+| `--req-per-worker` | `15` | Zaprosy na voronku (ignoriruetsya pri `--duration`) |
+| `--duration` | `0` (otklyucheno) | Dlitel'nost' fazy, napr. `30s`, `1m` |
+| `--timeout` | `10s` | Tajm-aut na zapros |
 
-**Umut ÖZEN** — [@umutozen](https://github.com/umutozen)
+### Obnaruzhenie
+
+| Flag | Po umolchaniyu | Opisanie |
+|---|---|---|
+| `--no-discovery` | `false` | Propustit' Katana+Httpx, testirovat' tol'ko koren' |
+| `--endpoints` | `""` | Zagruzit' konechnye tochki iz fajla |
+| `--katana-path` | `""` | Pol'zovatel'sky put' k binarnому fajlu Katana |
+| `--httpx-path` | `""` | Pol'zovatel'sky put' k binarnому fajlu Httpx |
+
+### HTTP i bezopasnost'
+
+| Flag | Po umolchaniyu | Opisanie |
+|---|---|---|
+| `-H`, `--header` | — | Pol'zovatel'sky zagolovok (povtoryaemy) |
+| `--insecure` | `false` | Propustit' proverku sertifikata TLS |
+
+### Vyvod
+
+| Flag | Po umolchaniyu | Opisanie |
+|---|---|---|
+| `--format` | `both` | Format otcheta: `json`, `html`, `both` |
+| `--output` | `./outputs` | Katalog vyvoda dlya otchetov |
+
+### Opoveshcheniya CI/CD
+
+| Flag | Po umolchaniyu | Opisanie |
+|---|---|---|
+| `--alert-p99` | `0` (otklyucheno) | exit 1 esli P99 (ms) prevyshaet porog |
+| `--alert-error-rate` | `0` (otklyucheno) | exit 1 esli chastota oshibok (%) prevyshaet porog |
+| `--alert-rps` | `0` (otklyucheno) | exit 1 esli req/s padaet nizhe poroga |
+
+---
+
+## Fazy testirovaniya
+
+| Faza | Opisanie |
+|---|---|
+| **0 — Discovery** | Krauling Katana + zond Httpx, deduplirovanny spisok |
+| **1 — Ramp-Up** | Postupennoe uvelichenie parallelizma: 5 → 15 → 30 → pik |
+| **2 — Sustained** | 3 volny pri celevoj nagruzke |
+| **3 — Spike** | Vneznoe uvelichenie do pika, zatem ostyvanie |
+| **4 — Recovery** | Proverka sostoyaniya posle 10s ostyvanya |
+
+---
+
+## Vyvod i otchety
+
+| Fajl | Opisanie |
+|---|---|
+| `stormprobe_report_<timestamp>.json` | Vse metriki po fazam, mashinochitaemy |
+| `stormprobe_report_<timestamp>.html` | Avtonomna temnaya panel' s grafikom SVG zaderzh ki |
+
+---
+
+## Otkaznichestvo
+
+Etot instrument prednaznachen **isklyuchitel'no dlya avtorizovannogo testirovaniya bezopasnosti i ocenki proizvoditel'nosti**. Pered provedeniem nagruzochnyh testov neobhodimo poluchit' yavnoe pis'mennoe razreshenie ot vladel'ca celevoj sistemy. Avtory ne nesut **nikakoj otvetstvennosti** za nenadzhezhдное ispol'zovanie ili ushcherb, prichinennyj etim instrumentom.
+
+---
+
+## Litsenziya
+
+[MIT](../../LICENSE) © [Umut ÖZEN](https://github.com/umutozen)
