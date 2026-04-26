@@ -47,16 +47,16 @@ Designed for:
 
 | Feature | Details |
 |---|---|
-| 🔍 **Auto-Discovery** | Katana crawl + Httpx probe, deduplicated live endpoint list |
-| 📈 **4-Phase Load Test** | Ramp-Up → Sustained → Spike → Recovery |
-| 📊 **Rich Metrics** | P50 / P95 / P99 latency, req/s, error classification per phase |
-| ⏱️ **Duration Mode** | Time-based phases (`--duration 30s`) instead of request count |
-| 🚨 **Alert Thresholds** | CI/CD-ready `exit 1` on P99, error rate, or RPS breach |
-| 📄 **Dual Reports** | JSON (machine-readable) + self-contained HTML dark dashboard |
-| 🔐 **Custom Headers** | Bearer tokens, tenant headers, cookies — all propagated everywhere |
-| 🐳 **Docker Ready** | Single image with bundled Katana + Httpx |
-| 🌍 **Cross-Platform** | Linux, macOS, Windows — amd64 & arm64 |
-| ⚡ **Zero Dependencies** | Pure Go 1.21+ stdlib, `go install` and done |
+| **Auto-Discovery** | Katana crawl + Httpx probe, deduplicated live endpoint list |
+| **4-Phase Load Test** | Ramp-Up → Sustained → Spike → Recovery |
+| **Rich Metrics** | P50 / P95 / P99 latency, req/s, error classification per phase |
+| **Duration Mode** | Time-based phases (`--duration 30s`) instead of request count |
+| **Alert Thresholds** | CI/CD-ready `exit 1` on P99, error rate, or RPS breach |
+| **Dual Reports** | JSON (machine-readable) + self-contained HTML dark dashboard |
+| **Custom Headers** | Bearer tokens, tenant headers, cookies — all propagated everywhere |
+| **Docker Ready** | Single image with bundled Katana + Httpx |
+| **Cross-Platform** | Linux, macOS, Windows — amd64 & arm64 |
+| **Zero Dependencies** | Pure Go 1.21+ stdlib, `go install` and done |
 
 ---
 
