@@ -39,10 +39,13 @@ func headlessBrowserAvailable() bool {
 	return false
 }
 
-func crawlWithKatana(katanaPath, targetURL string) ([]string, error) {
+func crawlWithKatana(katanaPath, targetURL string, headers map[string]string) ([]string, error) {
 	fmt.Printf("  [Katana] Crawling %s\n", targetURL)
 
 	args := []string{"-u", targetURL, "-d", "3", "-fs", "fqdn", "-silent", "-timeout", "10", "-rate-limit", "30"}
+	for k, v := range headers {
+		args = append(args, "-H", fmt.Sprintf("%s: %s", k, v))
+	}
 	if headlessBrowserAvailable() {
 		args = append(args, "-jc")
 		fmt.Println("  [Katana] Headless browser detected, JS crawl enabled")

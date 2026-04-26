@@ -35,7 +35,7 @@ func findTool(name, customPath string) string {
 	return ""
 }
 
-func Discover(targetURL, katanaCustom, httpxCustom string, noDiscovery bool) []string {
+func Discover(targetURL, katanaCustom, httpxCustom string, noDiscovery bool, headers map[string]string) []string {
 	fmt.Println("\n+==================================================+")
 	fmt.Println("|  PHASE 0: DISCOVERY (Katana + Httpx)             |")
 	fmt.Println("+==================================================+")
@@ -53,7 +53,7 @@ func Discover(targetURL, katanaCustom, httpxCustom string, noDiscovery bool) []s
 		return []string{"/"}
 	}
 
-	allURLs, err := crawlWithKatana(katanaPath, targetURL)
+	allURLs, err := crawlWithKatana(katanaPath, targetURL, headers)
 	if err != nil || len(allURLs) == 0 {
 		fmt.Println("  [!] Katana yielded no results, using root path only")
 		return []string{"/"}
@@ -61,7 +61,7 @@ func Discover(targetURL, katanaCustom, httpxCustom string, noDiscovery bool) []s
 
 	var paths []string
 	if httpxPath != "" {
-		paths = filterWithHttpx(httpxPath, allURLs, targetURL)
+		paths = filterWithHttpx(httpxPath, allURLs, targetURL, headers)
 	}
 
 	if len(paths) == 0 {

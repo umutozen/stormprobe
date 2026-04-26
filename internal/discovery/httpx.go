@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func filterWithHttpx(httpxPath string, rawURLs []string, targetURL string) []string {
+func filterWithHttpx(httpxPath string, rawURLs []string, targetURL string, headers map[string]string) []string {
 	if len(rawURLs) == 0 {
 		return nil
 	}
@@ -28,7 +28,11 @@ func filterWithHttpx(httpxPath string, rawURLs []string, targetURL string) []str
 	}
 	tmp.Close()
 
-	cmd := exec.Command(httpxPath, "-l", tmp.Name(), "-silent", "-mc", "200,201,301,302,303", "-timeout", "8", "-threads", "25", "-rate-limit", "40")
+	args := []string{"-l", tmp.Name(), "-silent", "-mc", "200,201,301,302,303", "-timeout", "8", "-threads", "25", "-rate-limit", "40"}
+	for k, v := range headers {
+		args = append(args, "-H", fmt.Sprintf("%s: %s", k, v))
+	}
+	cmd := exec.Command(httpxPath, args...)
 	var stdout bytes.Buffer
 	cmd.Stdout = &stdout
 

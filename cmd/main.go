@@ -142,7 +142,7 @@ func main() {
 		endpoints = loadEndpointsFile(cfg.EndpointsFile)
 	}
 	if len(endpoints) == 0 {
-		endpoints = discovery.Discover(targetURL, cfg.KatanaPath, cfg.HttpxPath, cfg.NoDiscovery)
+		endpoints = discovery.Discover(targetURL, cfg.KatanaPath, cfg.HttpxPath, cfg.NoDiscovery, cfg.Headers)
 	}
 	if len(endpoints) == 0 {
 		fmt.Fprintln(os.Stderr, "No endpoints available. Use --endpoints to provide a list.")
