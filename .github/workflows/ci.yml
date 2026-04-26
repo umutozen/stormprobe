@@ -17,12 +17,24 @@ jobs:
   docker:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker image
-        run: docker build -t stormprobe .
+        run: docker build -t ghcr.io/umutozen/stormprobe:latest .
       - name: Smoke test
-        run: docker run --rm stormprobe --help
+        run: docker run --rm ghcr.io/umutozen/stormprobe:latest --help
+      - name: Push to GHCR
+        if: github.ref == 'refs/heads/main'
+        run: docker push ghcr.io/umutozen/stormprobe:latest
 
   release:
     needs: test
@@ -44,6 +56,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push versioned Docker image
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          docker build -t ghcr.io/umutozen/stormprobe:${VERSION} -t ghcr.io/umutozen/stormprobe:latest .
+          docker push ghcr.io/umutozen/stormprobe:${VERSION}
+          docker push ghcr.io/umutozen/stormprobe:latest
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
