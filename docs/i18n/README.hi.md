@@ -30,7 +30,7 @@ Svayam endpoint (ant bindu) khoj ke saath utpaadan-star ka HTTP load testing upa
 ```bash
 go run ./cmd https://example.com
 
-go build -o stormprobe ./cmd
+go build -o stormprobe ./cmd/stormprobe
 ./stormprobe --insecure https://example.com
 ```
 
@@ -50,12 +50,18 @@ Move-Item stormprobe.exe C:\Windows\System32\stormprobe.exe
 stormprobe --no-discovery https://example.com
 ```
 
+### go install (requires Go 1.21+)
+```bash
+go install github.com/umutozen/stormprobe/cmd/stormprobe@latest
+stormprobe --no-discovery https://example.com
+```
+
 ### स्रोत से बनाएं (Go 1.21+ आवश्यक)
 ```bash
 git clone https://github.com/umutozen/stormprobe.git
 cd stormprobe
-go build -o stormprobe ./cmd   # Linux / macOS
-go build -o stormprobe.exe ./cmd   # Windows
+go build -o stormprobe ./cmd/stormprobe   # Linux / macOS
+go build -o stormprobe.exe ./cmd/stormprobe   # Windows
 ```
 
 ### Docker
