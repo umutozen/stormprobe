@@ -239,15 +239,16 @@ func main() {
 	tableFooter()
 
 	printErrorSummary(results)
-	printVerdict(verdict.Analyse(results))
+	v := verdict.Analyse(results)
+	printVerdict(v)
 
 	if cfg.Format == "json" || cfg.Format == "both" {
-		if writeErr := report.WriteJSON(targetURL, cfg.OutputDir, results, endpoints); writeErr != nil {
+		if writeErr := report.WriteJSON(targetURL, cfg.OutputDir, results, endpoints, v); writeErr != nil {
 			fmt.Fprintf(os.Stderr, "[!] %v\n", writeErr)
 		}
 	}
 	if cfg.Format == "html" || cfg.Format == "both" {
-		if writeErr := report.WriteHTML(targetURL, cfg.OutputDir, results, endpoints); writeErr != nil {
+		if writeErr := report.WriteHTML(targetURL, cfg.OutputDir, results, endpoints, v); writeErr != nil {
 			fmt.Fprintf(os.Stderr, "[!] %v\n", writeErr)
 		}
 	}

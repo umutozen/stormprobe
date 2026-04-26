@@ -8,9 +8,10 @@ import (
 	"time"
 
 	"github.com/umutozen/stormprobe/internal/config"
+	"github.com/umutozen/stormprobe/internal/verdict"
 )
 
-func WriteJSON(target, outputDir string, results []config.PhaseResult, endpoints []string) error {
+func WriteJSON(target, outputDir string, results []config.PhaseResult, endpoints []string, v verdict.Verdict) error {
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		return fmt.Errorf("cannot create output dir: %w", err)
 	}
@@ -32,6 +33,16 @@ func WriteJSON(target, outputDir string, results []config.PhaseResult, endpoints
 		"tool_version":         config.Version,
 		"discovered_endpoints": endpoints,
 		"phases":               results,
+		"verdict": map[string]any{
+			"rating":            v.Rating,
+			"safe_concurrency":  v.SafeConcurrency,
+			"degradation_at_vu": v.DegradationAt,
+			"failure_point_vu":  v.FailurePoint,
+			"bottleneck_cause":  v.BottleneckCause,
+			"bottleneck_detail": v.BottleneckDetail,
+			"recovery_ok":       v.RecoveryOK,
+			"recommendation":    v.Recommendation,
+		},
 	})
 	if err != nil {
 		return err

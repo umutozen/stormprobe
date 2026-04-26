@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/umutozen/stormprobe/internal/config"
+	"github.com/umutozen/stormprobe/internal/verdict"
 )
 
 const (
@@ -27,7 +28,7 @@ func pickSuccessColor(rate float64) string {
 	return colorSuccess
 }
 
-func WriteHTML(target, outputDir string, results []config.PhaseResult, endpoints []string) error {
+func WriteHTML(target, outputDir string, results []config.PhaseResult, endpoints []string, v verdict.Verdict) error {
 	if err := os.MkdirAll(outputDir, 0755); err != nil {
 		return fmt.Errorf("cannot create output dir: %w", err)
 	}
@@ -67,6 +68,7 @@ func WriteHTML(target, outputDir string, results []config.PhaseResult, endpoints
 	tableHTML := buildTable(results)
 	errorHTML := buildErrorSection(results, totalFailed)
 	endpointHTML := buildEndpointList(endpoints)
+	verdictHTML := buildVerdictCard(v)
 
 	successColor := pickSuccessColor(overallSuccess)
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
@@ -437,6 +439,8 @@ tbody tr:last-child td {
   </div>
 </div>
 
+%s
+
 <div class="stats-grid">
   <div class="stat-card">
     <div class="value" style="color:%s">%.1f%%</div>
@@ -498,6 +502,7 @@ tbody tr:last-child td {
 		target, timestamp, totalDuration,
 		successColor, overallSuccess,
 		totalRequests, totalFailed, len(results), len(endpoints),
+		verdictHTML,
 		chartHTML, tableHTML, errorHTML,
 		len(endpoints), endpointHTML,
 		config.Version, timestamp)
@@ -684,5 +689,83 @@ func buildEndpointList(endpoints []string) string {
 		html += fmt.Sprintf(`<li><code>%s</code></li>`, ep)
 	}
 	html += `</ul>`
+	return html
+}
+
+func buildVerdictCard(v verdict.Verdict) string {
+	ratingColor := map[verdict.Rating]string{
+		verdict.RatingHealthy:  "#10b981",
+		verdict.RatingDegraded: "#f59e0b",
+		verdict.RatingCritical: "#ef4444",
+		verdict.RatingUnstable: "#f97316",
+	}
+	color, ok := ratingColor[v.Rating]
+	if !ok {
+		color = "#94a3b8"
+	}
+
+	safeConcStr := "N/A"
+	if v.SafeConcurrency > 0 {
+		safeConcStr = fmt.Sprintf("%d VU", v.SafeConcurrency)
+	}
+	degradStr := "Not reached"
+	if v.DegradationAt > 0 {
+		degradStr = fmt.Sprintf("%d VU", v.DegradationAt)
+	}
+	failStr := "Not reached"
+	if v.FailurePoint > 0 {
+		failStr = fmt.Sprintf("%d VU", v.FailurePoint)
+	}
+	recovStr := "OK"
+	recovColor := "#10b981"
+	if !v.RecoveryOK {
+		recovStr = "FAILED"
+		recovColor = "#ef4444"
+	}
+
+	html := fmt.Sprintf(`<div class="card" style="border-color:%s;border-width:2px">
+  <h2 style="color:%s">Final Verdict</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:20px">
+    <div class="stat-card" style="border-color:%s">
+      <div class="value" style="font-size:24px;color:%s">%s</div>
+      <div class="label">Rating</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size:24px;color:var(--accent-green)">%s</div>
+      <div class="label">Safe Concurrency</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size:24px;color:var(--accent-amber)">%s</div>
+      <div class="label">Degradation At</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size:24px;color:var(--accent-red)">%s</div>
+      <div class="label">Failure Point</div>
+    </div>
+    <div class="stat-card">
+      <div class="value" style="font-size:24px;color:%s">%s</div>
+      <div class="label">Recovery</div>
+    </div>
+  </div>`,
+		color, color, color, color, v.Rating,
+		safeConcStr, degradStr, failStr,
+		recovColor, recovStr)
+
+	if v.BottleneckCause != "None" {
+		html += fmt.Sprintf(`
+  <div style="margin-bottom:12px;padding:16px;background:var(--bg-primary);border-radius:12px;border:1px solid var(--border)">
+    <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Bottleneck</div>
+    <div style="font-weight:600;color:var(--text-primary);margin-bottom:4px">%s</div>
+    <div style="font-size:13px;color:var(--text-secondary)">%s</div>
+  </div>`, v.BottleneckCause, v.BottleneckDetail)
+	}
+
+	html += fmt.Sprintf(`
+  <div style="padding:16px;background:var(--bg-primary);border-radius:12px;border:1px solid var(--border)">
+    <div style="font-size:12px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Recommendation</div>
+    <div style="font-size:14px;color:var(--text-primary)">%s</div>
+  </div>
+</div>`, v.Recommendation)
+
 	return html
 }
