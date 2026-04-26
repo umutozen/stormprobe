@@ -19,18 +19,18 @@ const (
 type Rating string
 
 const (
-	RatingHealthy         Rating = "Healthy"
-	RatingDegraded        Rating = "Degraded Under Load"
-	RatingCritical        Rating = "Not Production Ready"
-	RatingUnstable        Rating = "High Risk"
+	RatingHealthy  Rating = "Healthy"
+	RatingDegraded Rating = "Degraded Under Load"
+	RatingCritical Rating = "Not Production Ready"
+	RatingUnstable Rating = "High Risk"
 )
 
 // Verdict testin bütünsel yorumudur.
 type Verdict struct {
 	Rating           Rating
 	SafeConcurrency  int
-	DegradationAt    int    // 0 = görülmedi
-	FailurePoint     int    // 0 = görülmedi
+	DegradationAt    int // 0 = görülmedi
+	FailurePoint     int // 0 = görülmedi
 	BottleneckCause  string
 	BottleneckDetail string
 	PriorityChecks   []string
@@ -41,7 +41,7 @@ type Verdict struct {
 // Analyze tüm faz sonuçlarını değerlendirerek bir Verdict üretir.
 func Analyze(results []config.PhaseResult) Verdict {
 	if len(results) == 0 {
-		return Verdict{Rating: RatingHealthy, Recommendation: "No data to analyse."}
+		return Verdict{Rating: RatingHealthy, Recommendation: "No data to analyze."}
 	}
 
 	var (
