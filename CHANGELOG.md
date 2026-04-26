@@ -62,13 +62,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub issue templates (bug report, feature request) and PR template
 - `FUNDING.yml` for GitHub Sponsors / Open Collective
 
-### Fixed
-
-- SVG chart label truncation and bottom padding in HTML report
-- Success badge thresholds in table output
-- Turkish characters in language switcher and disclaimer sections of README
-- Chrome/Edge headless browser detection on Windows when binaries are not on PATH
-
 ---
 
 [Unreleased]: https://github.com/umutozen/stormprobe/compare/v1.0.0...HEAD
