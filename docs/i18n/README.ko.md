@@ -37,22 +37,22 @@ go build -o stormprobe ./cmd
 ### Docker
 
 ```bash
-# Quick test, no report saved
+# 빠른 테스트, 보고서 저장 없음
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
 
-# Full test with reports saved to ./outputs (Linux / macOS)
+# 보고서를 ./outputs에 저장하는 전체 테스트 (Linux / macOS)
 docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 
-# Full test with reports saved to ./outputs (Windows PowerShell)
+# 보고서를 ./outputs에 저장하는 전체 테스트 (Windows PowerShell)
 docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 
-# High-load spike test (500 concurrent users)
+# 높은 부하 스파이크 테스트 (500명 동시 사용자)
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --concurrency-spike 500 https://example.com
 
-# Skip discovery, test root path only
+# 디스커버리 건너뛰기, 루트 경로만 테스트
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery https://example.com
 
-# Custom HTTP headers (Authorization, custom tenant, etc.)
+# 사용자 정의 HTTP 헤더 (인증, 커스텀 테넌트 등)
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
 ```
 

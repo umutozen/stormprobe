@@ -37,22 +37,22 @@ go build -o stormprobe ./cmd
 ### Docker
 
 ```bash
-# Quick test, no report saved
+# Prueba rápida, sin informe guardado
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
 
-# Full test with reports saved to ./outputs (Linux / macOS)
+# Prueba completa con informes en ./outputs (Linux / macOS)
 docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 
-# Full test with reports saved to ./outputs (Windows PowerShell)
+# Prueba completa con informes en ./outputs (Windows PowerShell)
 docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
 
-# High-load spike test (500 concurrent users)
+# Prueba de pico de alta carga (500 usuarios simultáneos)
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --concurrency-spike 500 https://example.com
 
-# Skip discovery, test root path only
+# Omitir descubrimiento, probar solo la ruta raíz
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery https://example.com
 
-# Custom HTTP headers (Authorization, custom tenant, etc.)
+# Encabezados HTTP personalizados (autorización, tenant personalizado, etc.)
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
 ```
 
