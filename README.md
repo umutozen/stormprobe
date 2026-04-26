@@ -54,6 +54,12 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery htt
 
 # Custom HTTP headers (Authorization, custom tenant, etc.)
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
+
+# Duration-based test (30s per phase)
+docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --duration 30s --no-discovery https://example.com
+
+# CI/CD alert thresholds — exit 1 if P99 > 500ms or error rate > 5%
+docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --alert-p99 500 --alert-error-rate 5 https://example.com
 ```
 
 ## Usage
