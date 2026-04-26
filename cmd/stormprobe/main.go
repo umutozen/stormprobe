@@ -18,6 +18,7 @@ import (
 	"github.com/umutozen/stormprobe/internal/discovery"
 	"github.com/umutozen/stormprobe/internal/report"
 	"github.com/umutozen/stormprobe/internal/runner"
+	"github.com/umutozen/stormprobe/internal/verdict"
 )
 
 var validFormats = map[string]bool{
@@ -238,6 +239,7 @@ func main() {
 	tableFooter()
 
 	printErrorSummary(results)
+	printVerdict(verdict.Analyse(results))
 
 	if cfg.Format == "json" || cfg.Format == "both" {
 		if writeErr := report.WriteJSON(targetURL, cfg.OutputDir, results, endpoints); writeErr != nil {
@@ -287,10 +289,6 @@ func loadEndpointsFile(path string) []string {
 }
 
 func printErrorSummary(results []config.PhaseResult) {
-	fmt.Println("\n===========================================================")
-	fmt.Println("                    ERROR ANALYSIS")
-	fmt.Println("===========================================================")
-
 	var tTo, tRs, tRf, t5, t4, tOt, tFail, tAll int
 	for _, r := range results {
 		tTo += r.Errors.Timeout
@@ -303,12 +301,19 @@ func printErrorSummary(results []config.PhaseResult) {
 		tAll += r.TotalRequests
 	}
 
+	fmt.Println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+	fmt.Println("  ERROR ANALYSIS")
+	fmt.Println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+
 	if tFail > 0 && tAll > 0 {
-		fmt.Printf("  Total Requests    : %d | Failed: %d (%.1f%% of total)\n", tAll, tFail, float64(tFail)/float64(tAll)*100)
-		fmt.Println("  -- Failure Breakdown --")
+		fmt.Printf("  Total     : %d requests | %d failed (%.1f%%)\n", tAll, tFail, float64(tFail)/float64(tAll)*100)
+		fmt.Println()
 		pf := func(label string, count int) {
-			fmt.Printf("  %-20s: %d (%.1f%% of failures, %.1f%% of total)\n",
-				label, count, float64(count)/float64(tFail)*100, float64(count)/float64(tAll)*100)
+			if count == 0 {
+				return
+			}
+			fmt.Printf("  %-22s %d (%.1f%% of failures)\n",
+				label+":", count, float64(count)/float64(tFail)*100)
 		}
 		pf("Timeout", tTo)
 		pf("Connection Reset", tRs)
@@ -317,17 +322,58 @@ func printErrorSummary(results []config.PhaseResult) {
 		pf("HTTP 4xx", t4)
 		pf("Other", tOt)
 	} else {
-		fmt.Println("  No errors recorded.")
+		fmt.Printf("  Total     : %d requests | No errors recorded.\n", tAll)
 	}
 
-	fmt.Println("\n  HTTP Status Distribution:")
 	dist := make(map[int]int)
 	for _, r := range results {
 		for code, count := range r.StatusDist {
 			dist[code] += count
 		}
 	}
-	for code, count := range dist {
-		fmt.Printf("    %d : %d requests\n", code, count)
+	if len(dist) > 0 {
+		fmt.Println()
+		fmt.Println("  HTTP Status Distribution:")
+		for code, count := range dist {
+			fmt.Printf("    %d  %d requests\n", code, count)
+		}
 	}
+}
+
+func printVerdict(v verdict.Verdict) {
+	sep := "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+	fmt.Println("\n" + sep)
+	fmt.Println("  FINAL VERDICT")
+	fmt.Println(sep)
+
+	fmt.Printf("  Rating           : %s\n", v.Rating)
+
+	if v.SafeConcurrency > 0 {
+		fmt.Printf("  Safe concurrency : up to %d virtual users\n", v.SafeConcurrency)
+	} else {
+		fmt.Println("  Safe concurrency : could not determine")
+	}
+
+	if v.DegradationAt > 0 {
+		fmt.Printf("  Degradation at   : %d vu\n", v.DegradationAt)
+	}
+	if v.FailurePoint > 0 {
+		fmt.Printf("  Failure point    : %d vu\n", v.FailurePoint)
+	}
+
+	recoveryStr := "OK"
+	if !v.RecoveryOK {
+		recoveryStr = "FAILED — server did not recover after spike"
+	}
+	fmt.Printf("  Recovery         : %s\n", recoveryStr)
+
+	if v.BottleneckCause != "None" {
+		fmt.Println()
+		fmt.Printf("  Bottleneck       : %s\n", v.BottleneckCause)
+		fmt.Printf("  Detail           : %s\n", v.BottleneckDetail)
+	}
+
+	fmt.Println()
+	fmt.Printf("  Recommendation   : %s\n", v.Recommendation)
+	fmt.Println(sep)
 }
