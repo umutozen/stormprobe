@@ -34,7 +34,7 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/umutozen/stormprobe:latest .
       - name: Smoke test
-        run: docker run --rm ghcr.io/umutozen/stormprobe:latest --help
+        run: echo "" | docker run --rm -i ghcr.io/umutozen/stormprobe:latest 2>&1 | grep -q "StormProbe"
       - name: Push to GHCR
         if: github.ref == 'refs/heads/main'
         run: docker push ghcr.io/umutozen/stormprobe:latest
@@ -67,7 +67,7 @@ jobs:
           docker push ghcr.io/umutozen/stormprobe:${VERSION}
           docker push ghcr.io/umutozen/stormprobe:latest
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
           args: release --clean --release-notes=RELEASE_NOTES.md
