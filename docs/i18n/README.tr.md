@@ -51,6 +51,9 @@ docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --concurrency-spik
 
 # Skip discovery, test root path only
 docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery https://example.com
+
+# Custom HTTP headers (Authorization, custom tenant, etc.)
+docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure -H "Authorization: Bearer TOKEN" -H "X-Tenant: acme" https://api.example.com
 ```
 
 ## Kullanım
