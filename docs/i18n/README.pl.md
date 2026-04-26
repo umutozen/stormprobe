@@ -37,11 +37,20 @@ go build -o stormprobe ./cmd
 ### Docker
 
 ```bash
-# Linux / macOS
-docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
+# Quick test, no report saved
+docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
 
-# Windows (PowerShell)
-docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure https://example.com
+# Full test with reports saved to ./outputs (Linux / macOS)
+docker run --rm -v $(pwd)/outputs:/app/outputs ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
+
+# Full test with reports saved to ./outputs (Windows PowerShell)
+docker run --rm -v "${PWD}\outputs:/app/outputs" ghcr.io/umutozen/stormprobe:latest --insecure --format both https://example.com
+
+# High-load spike test (500 concurrent users)
+docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --concurrency-spike 500 https://example.com
+
+# Skip discovery, test root path only
+docker run --rm ghcr.io/umutozen/stormprobe:latest --insecure --no-discovery https://example.com
 ```
 
 ## Uzycie
