@@ -1,0 +1,12 @@
+/stormprobe
+/stormprobe.exe
+
+*.test
+*.out
+
+vendor/
+
+outputs/
+
+.DS_Store
+Thumbs.db

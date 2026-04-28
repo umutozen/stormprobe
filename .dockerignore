@@ -1,0 +1,11 @@
+outputs/
+stormprobe
+stormprobe.exe
+.git/
+.github/
+docs/
+*.md
+!go.mod
+!go.sum
+config.example.yml
+.goreleaser.yml

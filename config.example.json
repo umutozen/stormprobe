@@ -1,0 +1,29 @@
+{
+  "target": "https://example.com",
+  "insecure": false,
+  "no_discovery": false,
+  "format": "both",
+  "output": "./outputs",
+  "duration": "30s",
+  "request_timeout": "10s",
+
+  "concurrency_ramp": 50,
+  "concurrency_sustained": 75,
+  "concurrency_spike": 250,
+  "req_per_worker": 15,
+
+  "alert_p99": 0,
+  "alert_error_rate": 0,
+  "alert_rps": 0,
+
+  "headers": [
+    "Authorization: Bearer YOUR_TOKEN"
+  ],
+
+  "success_match": "",
+  "fail_match": "",
+
+  "auto_profile": true,
+  "profile": "",
+  "no_fingerprint": false
+}
